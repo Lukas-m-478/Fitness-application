@@ -62,7 +62,7 @@ def login():
     password_entry.delete(0, END)
     list_of_files = os.listdir()
     
-    if username1 + ".txt" in list_of_files:
+    if (username1 + ".txt" in list_of_files) and (username1 != ""):
         file1 = open(username1 + ".txt", "r")
         check = file1.read().splitlines()
         if password1 in check:
