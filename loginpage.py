@@ -11,7 +11,7 @@ from tkinter import *
 # create window
 
 window = tk.Tk()
-window.geometry("600x300")
+window.geometry("600x340")
 window.title("FitPro")
 
 window.configure(bg="aqua")
@@ -93,7 +93,9 @@ newusername_entry = tk.Entry(textvariable = username)
 newpassword_entry = tk.Entry(textvariable = password)
 newpassword_label = tk.Label( text="New Password", bg = "aqua", font="Arial")
 register_button = tk.Button(text="register", command = registerinfo)
-
+delete_button = tk.Button(text = "delete account")
+deleteaccount_entry = tk.Entry()
+deleteaccount_label = tk.Label(text = "Delete Account",bg= "aqua", font="Arial")
 
 #place widgets manually for login
 
@@ -113,6 +115,10 @@ newusername_entry.place(x = 450, y = 106)
 newpassword_entry.place(x = 450, y = 166) 
 newpassword_label.place(x = 300, y =160) 
 register_button.place(x = 450, y = 210)
+delete_button.place(x = 300, y=300 )
+deleteaccount_entry.place(x=300, y=265)
+deleteaccount_label.place(x=180, y=265)
+
 
 
 #run window
