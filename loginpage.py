@@ -1,6 +1,7 @@
 #import operating system to access text files
 
 import os
+from subprocess import call
 
 #import library
 
@@ -47,6 +48,8 @@ password_by_user = StringVar()
 
 def login_correct():
     messagebox.showinfo(title="Login Success", message="You successfully logged in.")
+    call(["python","homepage.py"])
+    window.destroy()
     
 def login_wrong():
     messagebox.showerror(title="Error", message="Invalid login.")
