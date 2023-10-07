@@ -1,13 +1,24 @@
-#import operating system to access text files
+#import hashing and sql libraries
 
-import os
+import hashlib
+import sqlite3
+
+#connects to database
+
+conn = sqlite3.connect("logindetails.db")
+
+cur = conn.cursor()
+
+#import library to switch between windows
+
 from subprocess import call
 
-#import library
+#import gui library
 
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
+
 
 # create window
 
@@ -17,32 +28,25 @@ window.title("FitPro")
 
 window.configure(bg="aqua")
 
-#allows variables to be used outside of fuctions
-global password
-global username
-
-#uses entries as variables
+#uses register entries as variables
 username = StringVar()
 password = StringVar()
 
-#adds login details to a new .txt file
+
+#adds username and hashed password to database
 def registerinfo():
     username_info = username.get()
     password_info = password.get()
-    newest_password = password_info
-    file = open(username_info + ".txt","w")
-    file.write(username_info+"\n")
-    file.write(password_info)
-    file.close()
-    newusername_entry.delete(0,END)
-    newpassword_entry.delete(0,END)
+    username_info = username_info.lower()
+    h = hashlib.sha256()
+    h.update(password_info.encode("utf-8"))
+    hashed_password = h.hexdigest()
+    cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
+    conn.commit()
+    newusername_entry.delete(0, END)
+    newpassword_entry.delete(0, END)
 
-def delete_account():
-    pass
-    
-
-global username_by_user
-global password_by_user
+#uses login entries as variables
 username_by_user = StringVar()
 password_by_user = StringVar()
 
@@ -50,30 +54,41 @@ def login_correct():
     messagebox.showinfo(title="Login Success", message="You successfully logged in.")
     call(["python","homepage.py"])
     window.destroy()
-    
+
 def login_wrong():
-    messagebox.showerror(title="Error", message="Invalid login.")
+    messagebox.showerror(title="Error", message="Invalid password.")
 
 def user_not_found():
-    messagebox.showerror(title="Error", message="User not found.")
+    messagebox.showerror(title="Error", message="Invalid username.")
 
+#compares user input with username and hashed password database
 
 def login():
     username1 = username_by_user.get()
     password1 = password_by_user.get()
-    username_entry.delete(0, END)
-    password_entry.delete(0, END)
-    list_of_files = os.listdir()
+    username1 = username1.lower()
+    h = hashlib.sha256()
+    h.update(password1.encode("utf-8"))
+    input_password = h.hexdigest()
+    cur.execute("SELECT password FROM users WHERE username=?", (username1,))
+    data = cur.fetchone()
+    print(data)
+    print(input_password)
     
-    if (username1 + ".txt" in list_of_files) and (username1 != ""):
-        file1 = open(username1 + ".txt", "r")
-        check = file1.read().splitlines()
-        if password1 in check:
+    if data is not None:
+        if input_password == data[0]:
             login_correct()
         else:
             login_wrong()
     else:
         user_not_found()
+  
+    username_entry.delete(0, END)
+    password_entry.delete(0, END)
+    
+def delete_acccount():
+    pass
+    
 
 
 
@@ -119,7 +134,7 @@ newpassword_entry.place(x = 450, y = 166)
 newpassword_label.place(x = 300, y =160) 
 register_button.place(x = 450, y = 210)
 delete_button.place(x = 300, y=300 )
-deleteaccount_entry.place(x=300, y=265)
+deleteaccount_entry.place(x=315, y=270)
 deleteaccount_label.place(x=180, y=265)
 
 
