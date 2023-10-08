@@ -53,10 +53,13 @@ def registerinfo():
                 username_info = username_info.lower()
                 h = hashlib.sha256()
                 h.update(password_info.encode("utf-8"))
-                hashed_password = h.hexdigest()
-                cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
-                conn.commit()
-                messagebox.showinfo(title="Success", message="Account has been created")
+                try:
+                    hashed_password = h.hexdigest()
+                    cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
+                    conn.commit()
+                    messagebox.showinfo(title="Success", message="Account has been created")
+                except sqlite3.IntegrityError:
+                    messagebox.showerror(title="Error", message="User already exists")
             else:
                 messagebox.showerror(title="Error", message="Username and password must be at least 5 characters long")
         else:
@@ -170,7 +173,6 @@ deleteaccount_label.place(x=150, y=265)
 #run window
 
 window.mainloop()
-
 
 
 
