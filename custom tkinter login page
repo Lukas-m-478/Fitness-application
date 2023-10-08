@@ -54,6 +54,7 @@ def registerinfo():
         hashed_password = h.hexdigest()
         cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
         conn.commit()
+        messagebox.showinfo(title="Success", message="Account created")
     else:
         messagebox.showerror(title="Error", message="Username and password must be 5 characters long")
     newusername_entry.delete(0, END)
@@ -73,7 +74,7 @@ def login_wrong():
     messagebox.showerror(title="Error", message="Invalid password")
 
 def user_not_found():
-    messagebox.showerror(title="Error", message="Invalid username")
+    messagebox.showerror(title="Error", message="User not found")
 
 #compares user input with username and hashed password database
 
@@ -103,8 +104,14 @@ def login():
 def delete_acccount():
     delete_username = deleteaccount_username.get()
     delete_username = delete_username.lower()
-    cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
-    conn.commit()
+    cur.execute("SELECT * FROM users WHERE username = ?",(delete_username,))
+    account_exists = cur.fetchone()
+    if account_exists:
+        cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
+        conn.commit()
+        messagebox.showinfo(title = "Success", message = "Account deleted")
+    else:
+        messagebox.showerror(title = "Error", message = "No account found")
     deleteaccount_entry.delete(0, END)
     deleteaccount_entry.delete(0, END)
     
