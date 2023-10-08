@@ -79,8 +79,6 @@ def login():
     input_password = h.hexdigest()
     cur.execute("SELECT password FROM users WHERE username=?", (username1,))
     data = cur.fetchone()
-    print(data)
-    print(input_password)
     
     if data is not None:
         if input_password == data[0]:
@@ -152,7 +150,6 @@ deleteaccount_label.place(x=180, y=265)
 #run window
 
 window.mainloop()
-
 
 
 
