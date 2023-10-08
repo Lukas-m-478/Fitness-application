@@ -35,7 +35,7 @@ customtkinter.set_default_color_theme("dark-blue")
 title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
 header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
 
-#uses register and delete account entries as variables
+#uses "register" and "delete account" entries as variables for registerinfo and delete_account functions
 username = StringVar()
 password = StringVar()
 deleteaccount_username = StringVar()
@@ -61,7 +61,7 @@ def registerinfo():
     newpassword_entry.delete(0, END)
 
 
-#uses login entries as variables
+#uses "login" entries as variables for login function
 username_by_user = StringVar()
 password_by_user = StringVar()
 
@@ -99,7 +99,7 @@ def login():
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     
-# deletes an account
+#deletes an account
 
 def delete_acccount():
     delete_username = deleteaccount_username.get()
