@@ -5,7 +5,7 @@ import sqlite3
 
 #connects to database
 
-conn = sqlite3.connect("logindetails.db")
+conn = sqlite3.connect("information.db")
 
 cur = conn.cursor()
 
@@ -47,16 +47,22 @@ def registerinfo():
     password_info = password.get()
     usernamelength = len(username_info)
     passwordlength = len(password_info)
-    if (usernamelength >= 5) and (passwordlength >= 5):
-        username_info = username_info.lower()
-        h = hashlib.sha256()
-        h.update(password_info.encode("utf-8"))
-        hashed_password = h.hexdigest()
-        cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
-        conn.commit()
-        messagebox.showinfo(title="Success", message="Account created")
+    if (username_info != "") and (password_info != ""):
+        if username_info != password_info:
+            if (usernamelength >= 5) and (passwordlength >= 5):
+                username_info = username_info.lower()
+                h = hashlib.sha256()
+                h.update(password_info.encode("utf-8"))
+                hashed_password = h.hexdigest()
+                cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
+                conn.commit()
+                messagebox.showinfo(title="Success", message="Account has been created")
+            else:
+                messagebox.showerror(title="Error", message="Username and password must be at least 5 characters long")
+        else:
+            messagebox.showerror(title="Error", message="Username and password cannot be identical")  
     else:
-        messagebox.showerror(title="Error", message="Username and password must be 5 characters long")
+        messagebox.showerror(title="Error", message="Username or password cannot be empty")              
     newusername_entry.delete(0, END)
     newpassword_entry.delete(0, END)
 
@@ -74,7 +80,7 @@ def login_wrong():
     messagebox.showerror(title="Error", message="Invalid password")
 
 def user_not_found():
-    messagebox.showerror(title="Error", message="User not found")
+    messagebox.showerror(title="Error", message="User has not been found")
 
 #compares user input with username and hashed password database
 
@@ -109,9 +115,9 @@ def delete_acccount():
     if account_exists:
         cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
         conn.commit()
-        messagebox.showinfo(title = "Success", message = "Account deleted")
+        messagebox.showinfo(title = "Success", message = "Account has been deleted")
     else:
-        messagebox.showerror(title = "Error", message = "No account found")
+        messagebox.showerror(title = "Error", message = "No account has been found")
     deleteaccount_entry.delete(0, END)
     deleteaccount_entry.delete(0, END)
     
@@ -164,7 +170,6 @@ deleteaccount_label.place(x=150, y=265)
 #run window
 
 window.mainloop()
-
 
 
 
