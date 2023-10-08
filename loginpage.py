@@ -13,22 +13,29 @@ cur = conn.cursor()
 
 from subprocess import call
 
-#import gui library
+#import gui libraries
 
+import customtkinter
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-
+from tkinter import font
 
 # create window
-
-window = tk.Tk()
-window.geometry("600x340")
+window = customtkinter.CTk()
+window.geometry("615x355")
 window.title("FitPro")
 
-window.configure(bg="aqua")
+#set colour of window
 
-#uses register entries as variables
+customtkinter.set_appearance_mode("green")
+customtkinter.set_default_color_theme("dark-blue")
+
+#create font
+title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
+header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
+
+#uses "register" and "delete account" entries as variables for registerinfo and delete_account functions
 username = StringVar()
 password = StringVar()
 deleteaccount_username = StringVar()
@@ -47,13 +54,14 @@ def registerinfo():
         hashed_password = h.hexdigest()
         cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
         conn.commit()
+        messagebox.showinfo(title="Success", message="Account created")
     else:
         messagebox.showerror(title="Error", message="Username and password must be 5 characters long")
     newusername_entry.delete(0, END)
     newpassword_entry.delete(0, END)
 
 
-#uses login entries as variables
+#uses "login" entries as variables for login function
 username_by_user = StringVar()
 password_by_user = StringVar()
 
@@ -66,7 +74,7 @@ def login_wrong():
     messagebox.showerror(title="Error", message="Invalid password")
 
 def user_not_found():
-    messagebox.showerror(title="Error", message="Invalid username")
+    messagebox.showerror(title="Error", message="User not found")
 
 #compares user input with username and hashed password database
 
@@ -91,46 +99,52 @@ def login():
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     
-# deletes an account
+#deletes an account
 
 def delete_acccount():
     delete_username = deleteaccount_username.get()
     delete_username = delete_username.lower()
-    cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
-    conn.commit()
+    cur.execute("SELECT * FROM users WHERE username = ?",(delete_username,))
+    account_exists = cur.fetchone()
+    if account_exists:
+        cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
+        conn.commit()
+        messagebox.showinfo(title = "Success", message = "Account deleted")
+    else:
+        messagebox.showerror(title = "Error", message = "No account found")
     deleteaccount_entry.delete(0, END)
     deleteaccount_entry.delete(0, END)
     
 
 #create widgets for login
 
-login_label = tk.Label( text="Login page", bg = "aqua", font="Arial")
-username_label = tk.Label( text="Username", bg = "aqua", font="Arial")
-username_entry = tk.Entry(textvariable = username_by_user)
-password_entry = tk.Entry( show="*", textvariable = password_by_user)
-password_label = tk.Label( text="Password", bg = "aqua", font="Arial")
-login_button = tk.Button(text="Login", command = login)
+login_label = customtkinter.CTkLabel(master = window, text="Login", font =title_font)
+username_label = customtkinter.CTkLabel(master = window, text="Username", font =header_font)
+username_entry = customtkinter.CTkEntry(master = window, textvariable = username_by_user)
+password_entry = customtkinter.CTkEntry(master = window,show="*", textvariable = password_by_user)
+password_label = customtkinter.CTkLabel(master = window, text="Password", font =header_font)
+login_button = customtkinter.CTkButton(master = window, text="Login", command = login)
 
 
 
 #create widgets for register
 
-register_label = tk.Label( text="Register", bg = "aqua", font="Arial")
-newusername_label = tk.Label( text="New Username", bg = "aqua", font="Arial")
-newusername_entry = tk.Entry(textvariable = username)
-newpassword_entry = tk.Entry(textvariable = password)
-newpassword_label = tk.Label( text="New Password", bg = "aqua", font="Arial")
-register_button = tk.Button(text="register", command = registerinfo)
-delete_button = tk.Button(text = "delete account", command = delete_acccount)
-deleteaccount_entry = tk.Entry(textvariable= deleteaccount_username)
-deleteaccount_label = tk.Label(text = "Delete Account",bg= "aqua", font="Arial")
+register_label = customtkinter.CTkLabel(master = window, text="Register", font =title_font)
+newusername_label = customtkinter.CTkLabel(master = window, text="New Username", font =header_font)
+newusername_entry = customtkinter.CTkEntry(master = window,textvariable = username)
+newpassword_entry = customtkinter.CTkEntry(master = window,textvariable = password)
+newpassword_label = customtkinter.CTkLabel(master = window,text="New Password", font =header_font)
+register_button = customtkinter.CTkButton(master = window, text="register", command = registerinfo)
+delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccount)
+deleteaccount_entry = customtkinter.CTkEntry(master = window,textvariable= deleteaccount_username)
+deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account", font =header_font)
 
 #place widgets manually for login
 
 login_label.place(x = 110, y =50)
 username_label.place(x =10, y =100)
-username_entry.place(x = 110, y = 106)
-password_entry.place(x = 110, y = 166)
+username_entry.place(x = 110, y = 100)
+password_entry.place(x = 110, y = 160)
 password_label.place(x = 10, y = 160 )
 login_button.place(x = 110, y = 210)
 
@@ -138,14 +152,14 @@ login_button.place(x = 110, y = 210)
 #place widgets manually for register
 
 register_label.place(x = 450, y = 50)
-newusername_label.place(x = 300, y = 100 )
-newusername_entry.place(x = 450, y = 106)
-newpassword_entry.place(x = 450, y = 166) 
+newusername_label.place(x = 300, y = 100)
+newusername_entry.place(x = 450, y = 100)
+newpassword_entry.place(x = 450, y = 160) 
 newpassword_label.place(x = 300, y =160) 
 register_button.place(x = 450, y = 210)
-delete_button.place(x = 300, y=300 )
-deleteaccount_entry.place(x=315, y=270)
-deleteaccount_label.place(x=180, y=265)
+delete_button.place(x = 300, y=305 )
+deleteaccount_entry.place(x=300, y=265)
+deleteaccount_label.place(x=150, y=265)
 
 #run window
 
