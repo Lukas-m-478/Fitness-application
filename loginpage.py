@@ -1,14 +1,11 @@
 #import hashing and sql libraries
-
 import hashlib
 import sqlite3
 
 #import library to switch between files
-
 from subprocess import call
 
 #import gui libraries
-
 import customtkinter
 import tkinter as tk
 from tkinter import messagebox
@@ -21,7 +18,6 @@ window.geometry("615x355")
 window.title("FitPro")
 
 #set colour of window
-
 customtkinter.set_appearance_mode("green")
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -34,8 +30,7 @@ username = StringVar()
 password = StringVar()
 deleteaccount_username = StringVar()
 
-
-#add username and hashed password to database
+#add username and hashed password to database if they are at least 5 characters long and are not identical
 def registerinfo():
     username_info = username.get()
     password_info = password.get()
@@ -63,6 +58,7 @@ def registerinfo():
             messagebox.showerror(title="Error", message="Username and password cannot be identical")  
     else:
         messagebox.showerror(title="Error", message="Username or password cannot be empty")              
+   
     newusername_entry.delete(0, END)
     newpassword_entry.delete(0, END)
 
@@ -71,19 +67,13 @@ def registerinfo():
 username_by_user = StringVar()
 password_by_user = StringVar()
 
+#goes to homepage if credentials are correct
 def login_correct():
     messagebox.showinfo(title="Login Success", message="You successfully logged in")
     call(["python","homepage.py"])
     window.destroy()
 
-def login_wrong():
-    messagebox.showerror(title="Error", message="Invalid password")
-
-def user_not_found():
-    messagebox.showerror(title="Error", message="User has not been found")
-
 #compare user input with username and hashed password database
-
 def login():
     username1 = username_by_user.get()
     password1 = password_by_user.get()
@@ -97,26 +87,25 @@ def login():
     data = cur.fetchone()
     conn.close()
     
+    #checks if account(username) exists, then checks if password matches
     if data is not None:
         if input_password == data[0]:
             login_correct()
         else:
-            login_wrong()
+            messagebox.showerror(title="Error", message="Invalid password")
     else:
-        user_not_found()
+        messagebox.showerror(title="Error", message="User has not been found")
   
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     
 #go to "deleteaccount" page
-
 def delete_acccountbutton():
     call(["python","deleteaccount.py"])
     window.destroy()
     
 
 #create widgets for login
-
 login_label = customtkinter.CTkLabel(master = window, text="Login", font =title_font)
 username_label = customtkinter.CTkLabel(master = window, text="Username", font =header_font)
 username_entry = customtkinter.CTkEntry(master = window, textvariable = username_by_user)
@@ -124,10 +113,7 @@ password_entry = customtkinter.CTkEntry(master = window,show="*", textvariable =
 password_label = customtkinter.CTkLabel(master = window, text="Password", font =header_font)
 login_button = customtkinter.CTkButton(master = window, text="Login", command = login)
 
-
-
 #create widgets for register
-
 register_label = customtkinter.CTkLabel(master = window, text="Register", font =title_font)
 newusername_label = customtkinter.CTkLabel(master = window, text="New Username", font =header_font)
 newusername_entry = customtkinter.CTkEntry(master = window,textvariable = username)
@@ -138,7 +124,6 @@ delete_button = customtkinter.CTkButton(master = window, text = "delete", comman
 deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account?", font =header_font)
 
 #place widgets manually for login
-
 login_label.place(x = 110, y =50)
 username_label.place(x =10, y =100)
 username_entry.place(x = 110, y = 100)
@@ -146,9 +131,7 @@ password_entry.place(x = 110, y = 160)
 password_label.place(x = 10, y = 160 )
 login_button.place(x = 110, y = 210)
 
-
 #place widgets manually for register
-
 register_label.place(x = 450, y = 50)
 newusername_label.place(x = 300, y = 100)
 newusername_entry.place(x = 450, y = 100)
@@ -159,8 +142,6 @@ delete_button.place(x = 300, y=305 )
 deleteaccount_label.place(x=300, y=265)
 
 #run window
-
 window.mainloop()
-
 
 
