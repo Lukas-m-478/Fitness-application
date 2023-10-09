@@ -1,5 +1,4 @@
 #import libraries
-
 import customtkinter
 import sqlite3
 from subprocess import call
@@ -8,29 +7,25 @@ from tkinter import *
 import hashlib
 
 #create window
-
 window = customtkinter.CTk()
 window.geometry("350x300")
 window.title("FitPro")
 
 #function to return to home page
-
 def back():
     call(["python","loginpage.py"])
     window.destroy()
 
-#create font
 
+#create font
 title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
 header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
 
 #use entries as variables
-
 deleteaccount_username = StringVar()
 deleteaccount_password = StringVar()
 
 #delete account if username and password matches
-
 def delete_acccount():
     delete_username = deleteaccount_username.get()
     delete_username = delete_username.lower()
@@ -52,8 +47,10 @@ def delete_acccount():
             messagebox.showerror(title= "Error", message = "Invalid password")
     else:
         messagebox.showerror(title="Error", message="No account has been found")
+   
     username_entry.delete(0, END)
     password_entry.delete(0, END)
+
 
 #create widgets
 delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccount)
