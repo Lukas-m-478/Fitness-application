@@ -3,13 +3,7 @@
 import hashlib
 import sqlite3
 
-#connects to database
-
-conn = sqlite3.connect("information.db")
-
-cur = conn.cursor()
-
-#import library to switch between windows
+#import library to switch between files
 
 from subprocess import call
 
@@ -35,13 +29,13 @@ customtkinter.set_default_color_theme("dark-blue")
 title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
 header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
 
-#uses "register" and "delete account" entries as variables for registerinfo and delete_account functions
+#use "register" and "delete account" entries as variables for registerinfo and delete_account functions
 username = StringVar()
 password = StringVar()
 deleteaccount_username = StringVar()
 
 
-#adds username and hashed password to database
+#add username and hashed password to database
 def registerinfo():
     username_info = username.get()
     password_info = password.get()
@@ -55,8 +49,11 @@ def registerinfo():
                 h.update(password_info.encode("utf-8"))
                 try:
                     hashed_password = h.hexdigest()
+                    conn = sqlite3.connect("information.db")
+                    cur = conn.cursor()
                     cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
                     conn.commit()
+                    conn.close()
                     messagebox.showinfo(title="Success", message="Account has been created")
                 except sqlite3.IntegrityError:
                     messagebox.showerror(title="Error", message="User already exists")
@@ -70,7 +67,7 @@ def registerinfo():
     newpassword_entry.delete(0, END)
 
 
-#uses "login" entries as variables for login function
+#use "login" entries as variables for login function
 username_by_user = StringVar()
 password_by_user = StringVar()
 
@@ -85,7 +82,7 @@ def login_wrong():
 def user_not_found():
     messagebox.showerror(title="Error", message="User has not been found")
 
-#compares user input with username and hashed password database
+#compare user input with username and hashed password database
 
 def login():
     username1 = username_by_user.get()
@@ -94,8 +91,11 @@ def login():
     h = hashlib.sha256()
     h.update(password1.encode("utf-8"))
     input_password = h.hexdigest()
+    conn = sqlite3.connect("information.db")
+    cur = conn.cursor()
     cur.execute("SELECT password FROM users WHERE username=?", (username1,))
     data = cur.fetchone()
+    conn.close()
     
     if data is not None:
         if input_password == data[0]:
@@ -108,21 +108,11 @@ def login():
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     
-#deletes an account
+#go to "deleteaccount" page
 
-def delete_acccount():
-    delete_username = deleteaccount_username.get()
-    delete_username = delete_username.lower()
-    cur.execute("SELECT * FROM users WHERE username = ?",(delete_username,))
-    account_exists = cur.fetchone()
-    if account_exists:
-        cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
-        conn.commit()
-        messagebox.showinfo(title = "Success", message = "Account has been deleted")
-    else:
-        messagebox.showerror(title = "Error", message = "No account has been found")
-    deleteaccount_entry.delete(0, END)
-    deleteaccount_entry.delete(0, END)
+def delete_acccountbutton():
+    call(["python","deleteaccount.py"])
+    window.destroy()
     
 
 #create widgets for login
@@ -144,9 +134,8 @@ newusername_entry = customtkinter.CTkEntry(master = window,textvariable = userna
 newpassword_entry = customtkinter.CTkEntry(master = window,textvariable = password)
 newpassword_label = customtkinter.CTkLabel(master = window,text="New Password", font =header_font)
 register_button = customtkinter.CTkButton(master = window, text="register", command = registerinfo)
-delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccount)
-deleteaccount_entry = customtkinter.CTkEntry(master = window,textvariable= deleteaccount_username)
-deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account", font =header_font)
+delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccountbutton)
+deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account?", font =header_font)
 
 #place widgets manually for login
 
@@ -167,13 +156,11 @@ newpassword_entry.place(x = 450, y = 160)
 newpassword_label.place(x = 300, y =160) 
 register_button.place(x = 450, y = 210)
 delete_button.place(x = 300, y=305 )
-deleteaccount_entry.place(x=300, y=265)
-deleteaccount_label.place(x=150, y=265)
+deleteaccount_label.place(x=300, y=265)
 
 #run window
 
 window.mainloop()
-
 
 
 
