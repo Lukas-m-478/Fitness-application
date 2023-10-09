@@ -12,4 +12,5 @@ CREATE TABLE IF NOT EXISTS users (
 )            
 """)
 
+#executes query
 conn.commit()
