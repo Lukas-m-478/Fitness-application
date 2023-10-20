@@ -20,6 +20,7 @@ def back():
 #create font
 title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
 header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
+intructions_font = customtkinter.CTkFont(family="Helvetica", size = 12,weight="bold" )
 
 #use entries as variables
 deleteaccount_username = StringVar()
@@ -39,10 +40,12 @@ def delete_acccount():
         h.update(delete_password.encode("utf-8"))
         delete_password = h.hexdigest()
         if delete_password == password_hash[2]:
-            cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo(title = "Success", message = "Account has been deleted")
+            msg_box = messagebox.askquestion(title="Alert!",message = "Are you sure you want to delete the account?")
+            if msg_box == "yes":
+                cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
+                conn.commit()
+                conn.close()
+                messagebox.showinfo(title = "Success", message = "Account has been deleted")
         else:
             messagebox.showerror(title= "Error", message = "Invalid password")
     else:
@@ -55,11 +58,12 @@ def delete_acccount():
 #create widgets
 delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccount)
 username_entry = customtkinter.CTkEntry(master = window, textvariable= deleteaccount_username)
-password_entry = customtkinter.CTkEntry(master = window, textvariable = deleteaccount_password)
+password_entry = customtkinter.CTkEntry(master = window, textvariable = deleteaccount_password, show="*")
 deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account", font = title_font)
 username_label = customtkinter.CTkLabel(master=window,text="Username", font = header_font)
 password_label = customtkinter.CTkLabel(master=window,text="Password", font = header_font)
 return_button = customtkinter.CTkButton(master = window, text="Return to login page",command = back)
+instructions_label = customtkinter.CTkLabel(master = window, text = "Enter username and password of\n the account that you wish to delete", font = intructions_font)
 
 #place widgets
 delete_button.place(x = 140, y=200)
@@ -69,6 +73,7 @@ deleteaccount_label.place(x=130, y=80)
 username_label.place(x=30,y=120)
 password_label.place(x=30,y=160)
 return_button.place(x=130,y=20)
+instructions_label.place(x=70,y=250)
 
 #run window
 window.mainloop()
