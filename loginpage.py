@@ -43,38 +43,47 @@ def registerinfo():
     confirm_password = confirm_password_input.get()
     usernamelength = len(username_info)
     passwordlength = len(password_info)
-    if (username_info != "") and (password_info != ""):
-        if (usernamelength < 15) and (passwordlength < 15):    
-            if username_info != password_info:
-                if (usernamelength >= 5) and (passwordlength >= 5):
-                    username_info = username_info.lower()
-                    h = hashlib.sha256()
-                    h.update(password_info.encode("utf-8"))
-                    try:
-                        hashed_password = h.hexdigest()
-                        if (re.search(r'[!@#$%^&*()]', password_info)) and (re.search(r'[A-Z]', password_info)):
-                            if password_info == confirm_password:
-                                conn = sqlite3.connect("information.db")
-                                cur = conn.cursor()
-                                cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
-                                conn.commit()
-                                conn.close()
-                                messagebox.showinfo(title="Success", message="Account has been created")
-                                enter()
+    if username_info != "":
+        if password_info != "":
+            if usernamelength < 15:
+                if passwordlength < 15:   
+                    if username_info != password_info:
+                        if usernamelength >= 5:
+                            if passwordlength >= 5:
+                                username_info = username_info.lower()
+                                h = hashlib.sha256()
+                                h.update(password_info.encode("utf-8"))
+                                try:
+                                    hashed_password = h.hexdigest()
+                                    if (re.search(r'[!@#$%^&*()]', password_info)) and (re.search(r'[A-Z]', password_info)):
+                                        if password_info == confirm_password:
+                                            conn = sqlite3.connect("information.db")
+                                            cur = conn.cursor()
+                                            cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
+                                            conn.commit()
+                                            conn.close()
+                                            messagebox.showinfo(title="Success", message="Account has been created")
+                                            enter()
+                                        else:
+                                            messagebox.showerror(title="error",message="New Password must be identical to Confirm Password")
+                                    else:
+                                        messagebox.showerror(title="Error", message="Password must contain at least one capital letter and at least one special character")
+                                except sqlite3.IntegrityError:
+                                    messagebox.showerror(title="Error", message="User already exists")
                             else:
-                                messagebox.showerror(title="error",message="New Password must be identical to Confirm Password")
+                                messagebox.showerror(title="Error",message="Password must be at least 5 characters long")
                         else:
-                            messagebox.showerror(title="Error", message="Password must contain at least one capital letter and at least one special character")
-                    except sqlite3.IntegrityError:
-                        messagebox.showerror(title="Error", message="User already exists")
+                            messagebox.showerror(title="Error", message="Username must be at least 5 characters long")
+                    else:
+                        messagebox.showerror(title="Error", message="Username and password cannot be identical")
                 else:
-                    messagebox.showerror(title="Error", message="Username and password must be at least 5 characters long")
+                    messagebox.showerror("error", message="Password is too long")
             else:
-                messagebox.showerror(title="Error", message="Username and password cannot be identical")
+                messagebox.showerror("error", message="Username is too long")  
         else:
-            messagebox.showerror("error", message="Username or password is too long")      
+            messagebox.showerror(title="Error", message="Password cannot be empty")  
     else:
-        messagebox.showerror(title="Error", message="Username or password cannot be empty")              
+        messagebox.showerror(title="Error", message="Username cannot be empty")              
    
     newpassword_entry.delete(0, END)
     confirm_password_entry.delete(0,END)
@@ -168,13 +177,12 @@ newusername_label.place(x = 450, y = 100)
 newusername_entry.place(x = 590, y = 100)
 newpassword_entry.place(x = 590, y = 160) 
 newpassword_label.place(x = 450, y =160) 
-register_button.place(x = 590, y = 250)
-credentialslengths_label.place(x=450,y=310)
-passwordrequirements_label.place(x=450, y=350)
-notidentical_label.place(x=450,y=380)
-confirm_password_label.place(x=410, y = 210)
-confirm_password_entry.place(x=590,y=210)
+register_button.place(x = 590, y = 270)
+credentialslengths_label.place(x=450,y=320)
+passwordrequirements_label.place(x=450, y=360)
+notidentical_label.place(x=450,y=390)
+confirm_password_label.place(x=410, y = 220)
+confirm_password_entry.place(x=590,y=220)
 
 #run window
 window.mainloop()
-
