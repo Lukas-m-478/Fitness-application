@@ -20,6 +20,8 @@ from tkinter import font
 window = customtkinter.CTk()
 window.geometry("790x440")
 window.title("FitPro")
+#prevent user from resizing window
+window.resizable(False,False)
 
 #set colour of window
 customtkinter.set_appearance_mode("green")
@@ -65,7 +67,7 @@ def registerinfo():
                                             messagebox.showinfo(title="Success", message="Account has been created")
                                             enter()
                                         else:
-                                            messagebox.showerror(title="error",message="New Password must be identical to Confirm Password")
+                                            messagebox.showerror(title="error",message="Passwords must be identical")
                                     else:
                                         messagebox.showerror(title="Error", message="Password must contain at least one capital letter and at least one special character")
                                 except sqlite3.IntegrityError:
@@ -145,9 +147,9 @@ username_entry = customtkinter.CTkEntry(master = window, textvariable = username
 password_entry = customtkinter.CTkEntry(master = window,show="*", textvariable = password_by_user)
 password_label = customtkinter.CTkLabel(master = window, text="Password", font =header_font)
 login_button = customtkinter.CTkButton(master = window, text="Login", command = login)
-credentialslengths_label = customtkinter.CTkLabel(master=window, text = "1. Password and username must be at least 5 characters long\n and under 15 characters in length", font = requirements_font)
-passwordrequirements_label = customtkinter.CTkLabel(master=window, text = "2. Password must have at least one capital letter\n and special character", font = requirements_font)
-notidentical_label = customtkinter.CTkLabel(master=window, text = "3. password and username must not be identical", font = requirements_font)
+credentialslengths_label = customtkinter.CTkLabel(master= window, text = "1. Password and username must be at least 5 characters long\n and under 15 characters in length", font = requirements_font)
+passwordrequirements_label = customtkinter.CTkLabel(master= window, text = "2. Password must have at least one capital letter\n and special character", font = requirements_font)
+notidentical_label = customtkinter.CTkLabel(master= window, text = "3. password and username must not be identical", font = requirements_font)
 delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccountbutton)
 deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account?", font =header_font)
 
