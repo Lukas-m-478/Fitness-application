@@ -79,9 +79,11 @@ cur.execute("INSERT INTO compound_exercises (exercise) VALUES (?)", ("pec fly",)
 cur.execute("INSERT INTO compound_exercises (exercise) VALUES (?)", ("rows",))
 cur.execute("INSERT INTO compound_exercises (exercise) VALUES (?)", ("leg press",))
 cur.execute("INSERT INTO compound_exercises (exercise) VALUES (?)", ("lunges",))
+cur.execute("INSERT INTO compound_exercises (exercise) VALUES (?)", ("burpees",))
 
 #insert cardio exercises
 cur.execute("INSERT INTO cardio (exercise) VALUES (?)", ("running",))
+cur.execute("INSERT INTO cardio (exercise) VALUES (?)", ("jogging",))
 cur.execute("INSERT INTO cardio (exercise) VALUES (?)", ("burpees",))
 cur.execute("INSERT INTO cardio (exercise) VALUES (?)", ("skipping rope",))
 cur.execute("INSERT INTO cardio (exercise) VALUES (?)", ("biking",))
@@ -130,6 +132,7 @@ cur.execute("UPDATE compound_exercises SET exercise_day = ? WHERE exercise = ?",
 cur.execute("UPDATE compound_exercises SET exercise_day = ? WHERE exercise = ?", ("Pull", "rows"))
 cur.execute("UPDATE compound_exercises SET exercise_day = ? WHERE exercise = ?", ("Legs", "leg press"))
 cur.execute("UPDATE compound_exercises SET exercise_day = ? WHERE exercise = ?", ("Legs", "lunges"))
+cur.execute("UPDATE compound_exercises SET exercise_day = ? WHERE exercise = ?", ("Legs,Push", "burpees"))
 
 #add muscle name to target_muscle column in upper body exercise table to specify what muscle each exercise works
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("biceps", "bicep curls"))
