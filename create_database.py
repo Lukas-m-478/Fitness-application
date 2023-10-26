@@ -1,5 +1,7 @@
-#creates database
+#sqlite3 was learned from https://www.youtube.com/watch?v=pd-0G0MigUA&t=706s
+#import sql library
 import sqlite3
+#creates database
 conn = sqlite3.connect("information.db")
 cur = conn.cursor()
 
@@ -139,7 +141,7 @@ cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = 
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("biceps", "hammer curls"))
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("biceps", "preacher curls"))
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("biceps", "barbell curls"))
-cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("lateral delts", "lateral raise"))
+cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("shoulders,traps", "lateral raise"))
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("triceps", "tricep extensions"))
 cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = ?", ("shoulders", "rear delts"))
 
@@ -147,6 +149,21 @@ cur.execute("UPDATE upper_body_exercises SET target_muscle = ? WHERE exercise = 
 cur.execute("UPDATE lower_body_exercises SET target_muscle = ? WHERE exercise = ?", ("quads", "leg extensions"))
 cur.execute("UPDATE lower_body_exercises SET target_muscle = ? WHERE exercise = ?", ("hamstrings", "leg curls"))
 cur.execute("UPDATE lower_body_exercises SET target_muscle = ? WHERE exercise = ?", ("calves", "calf raises"))
+
+#add muscle names to target_muscles column in compound exercise table to specify what muscles each exercise works
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("back,shoulders,biceps,traps", "pull ups"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("triceps,chest", "dips"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("quads,hamstrings,calves,glutes", "squats"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("hamstrings,back,glutes,traps", "deadlift"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("chest,shoulders,triceps", "bench press"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("triceps,chest,shoulders", "push ups"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("shoulders,triceps,chest", "shoulder press"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("lats,biceps,shoulders,traps", "lateral pull-down"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("chest,shoulders,triceps,biceps", "pec fly"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("lats,shoulders,back,biceps", "rows"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("quads,glutes,hamstrings,calves", "leg press"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("glutes,hamstrings,quads,calves", "lunges"))
+cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?", ("chest,triceps,shoulders,quads,hamstrings,glutes,calves", "burpees"))
 
 #execute queries
 conn.commit()
