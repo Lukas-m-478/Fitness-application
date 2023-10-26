@@ -3,13 +3,14 @@ import hashlib
 import sqlite3
 
 #import regular expressions to check if password has at least one capital letter and at least one special character
-#I learned how to use re from https://www.youtube.com/watch?v=Dkiz0z3bMg0
+#this module was learned from from https://www.youtube.com/watch?v=Dkiz0z3bMg0
 import re
 
 #import library to switch between files
+#this module was learned from https://www.youtube.com/watch?v=CUFIjz_U7Mo
 from subprocess import call
 
-#import gui libraries
+#import gui libraries, fundamentals of tkinter was learned from https://www.youtube.com/watch?v=ibf5cx221hk&t=1367s
 import customtkinter
 import tkinter as tk
 from tkinter import messagebox
@@ -30,7 +31,7 @@ customtkinter.set_default_color_theme("dark-blue")
 #create font
 title_font = customtkinter.CTkFont(family="Helvetica", size = 20, weight="bold")
 header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
-requirements_font = customtkinter.CTkFont(family="Helvetica", size = 10,weight="bold",  )
+small_font = customtkinter.CTkFont(family="Helvetica", size = 10,weight="bold",  )
 
 #use "register" and "delete account" entries as variables for registerinfo and delete_account functions
 username = StringVar()
@@ -40,25 +41,36 @@ confirm_password_input = StringVar()
 
 #add username and hashed password to database if they match requirements
 def registerinfo():
+    #get all values from entry boxes and get the lengths of the user's inputs
     username_info = username.get()
     password_info = password.get()
     confirm_password = confirm_password_input.get()
     usernamelength = len(username_info)
     passwordlength = len(password_info)
+    #check if new username and new password entries are empty
     if username_info != "":
         if password_info != "":
+            #checks if new username and new password is shorter than 15 characters
             if usernamelength < 15:
                 if passwordlength < 15:   
+                    #checks if new username and new password are identical
                     if username_info != password_info:
+                        #checks if new username and new password is at least 5 characters
                         if usernamelength >= 5:
                             if passwordlength >= 5:
+                                #automatically makes new username lowercase for better accessibility
                                 username_info = username_info.lower()
+                                #hashes new password for security
                                 h = hashlib.sha256()
                                 h.update(password_info.encode("utf-8"))
+                                #exception handling used so users cannot make multiple accounts with the same username
                                 try:
                                     hashed_password = h.hexdigest()
-                                    if (re.search(r'[!@#$%^&*()]', password_info)) and (re.search(r'[A-Z]', password_info)):
+                                    #check if there is at least one capital letter and special character in new password
+                                    if (re.search(r'[!@#$%^&*()123456789]', password_info)) and (re.search(r'[A-Z]', password_info)):
+                                        #check if new password is identical to confirm pasword
                                         if password_info == confirm_password:
+                                            #if all checks, are passed, new username and hashed new password will get added to the database, and user will login automatically
                                             conn = sqlite3.connect("information.db")
                                             cur = conn.cursor()
                                             cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
@@ -66,6 +78,7 @@ def registerinfo():
                                             conn.close()
                                             messagebox.showinfo(title="Success", message="Account has been created")
                                             enter()
+                                        #an error message will pop up if any of the requirements are not satisfied
                                         else:
                                             messagebox.showerror(title="error",message="Passwords must be identical")
                                     else:
@@ -147,11 +160,9 @@ username_entry = customtkinter.CTkEntry(master = window, textvariable = username
 password_entry = customtkinter.CTkEntry(master = window,show="*", textvariable = password_by_user)
 password_label = customtkinter.CTkLabel(master = window, text="Password", font =header_font)
 login_button = customtkinter.CTkButton(master = window, text="Login", command = login)
-credentialslengths_label = customtkinter.CTkLabel(master= window, text = "1. Password and username must be at least 5 characters long\n and under 15 characters in length", font = requirements_font)
-passwordrequirements_label = customtkinter.CTkLabel(master= window, text = "2. Password must have at least one capital letter\n and special character", font = requirements_font)
-notidentical_label = customtkinter.CTkLabel(master= window, text = "3. password and username must not be identical", font = requirements_font)
 delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccountbutton)
 deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account?", font =header_font)
+database_label = customtkinter.CTkLabel(master = window, text = "(Make sure that the database is installed\nor else the app will not work)", font =small_font)
 
 #create widgets for register
 register_label = customtkinter.CTkLabel(master = window, text="Register", font =title_font)
@@ -162,6 +173,9 @@ newpassword_label = customtkinter.CTkLabel(master = window,text="New Password", 
 register_button = customtkinter.CTkButton(master = window, text="register", command = registerinfo)
 confirm_password_label = customtkinter.CTkLabel(master = window,text="Confirm Password", font =header_font)
 confirm_password_entry = customtkinter.CTkEntry(master= window, show="*", textvariable=confirm_password_input)
+credentialslengths_label = customtkinter.CTkLabel(master= window, text = "1. Password and username must be at least 5 characters long\n and under 15 characters in length", font = small_font)
+passwordrequirements_label = customtkinter.CTkLabel(master= window, text = "2. Password must have at least one capital letter\n and special character", font = small_font)
+notidentical_label = customtkinter.CTkLabel(master= window, text = "3. password and username must not be identical", font = small_font)
 
 #place widgets manually for login
 login_label.place(x = 170, y =50)
@@ -172,6 +186,7 @@ password_label.place(x = 70, y = 160 )
 login_button.place(x = 170, y = 210)
 delete_button.place(x = 170, y=305 )
 deleteaccount_label.place(x=170, y=265)
+database_label.place(x=150,y=360)
 
 #place widgets manually for register
 register_label.place(x = 590, y = 50)
