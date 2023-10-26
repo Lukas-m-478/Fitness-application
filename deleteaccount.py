@@ -10,6 +10,8 @@ import hashlib
 window = customtkinter.CTk()
 window.geometry("350x300")
 window.title("FitPro")
+#prevent user from resizing window
+window.resizable(False,False)
 
 #function to return to home page
 def back():
@@ -28,26 +30,34 @@ deleteaccount_password = StringVar()
 
 #delete account if username and password matches
 def delete_acccount():
+    #get all values from entry boxes
     delete_username = deleteaccount_username.get()
     delete_username = delete_username.lower()
     delete_password = deleteaccount_password.get()
+    #connect to database
     conn = sqlite3.connect("information.db")
     cur = conn.cursor()
+    #if the username matches with a username in the database, it will continue
     cur.execute("SELECT * FROM users WHERE username = ?",(delete_username,))
     password_hash = cur.fetchone()
     if password_hash is not None:
+        #hash password entered by user so it can be compared with hashed password in database
         h = hashlib.sha256()
         h.update(delete_password.encode("utf-8"))
         delete_password = h.hexdigest()
+        #compare the password entered by user (now hashed) with the hashed password in database
         if delete_password == password_hash[2]:
+            #if the passwords match, the user will be asked if they really want to delete their account, and if user chooses "yes", account will be deleted, if the user chooses "no", account will not be deleted
             msg_box = messagebox.askquestion(title="Alert!",message = "Are you sure you want to delete the account?")
             if msg_box == "yes":
                 cur.execute("DELETE FROM users WHERE username = ?",(delete_username,))
                 conn.commit()
                 conn.close()
                 messagebox.showinfo(title = "Success", message = "Account has been deleted")
+        #if passwords do not match, an error message will pop up
         else:
             messagebox.showerror(title= "Error", message = "Invalid password")
+    #if usernames do not match, an error message will pop up
     else:
         messagebox.showerror(title="Error", message="No account has been found")
    
