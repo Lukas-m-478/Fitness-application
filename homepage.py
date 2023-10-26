@@ -64,7 +64,6 @@ def display_bmi_graph(bmi):
         borders = [bmi, 18.5, 20.75, 23, max(bmi + 5, 27.5)]
     colours = ['skyblue', 'red', 'green', 'yellow', 'orange']
     fig, ax = plt.subplots(figsize=(8, 5))
-    #html colour picker was used to find a background colour: https://www.google.com/search?q=html+colour+picker&sca_esv=576846173&sxsrf=AM9HkKllyd5F9yDWhV9KJ_3ulB0qmU1Jiw%3A1698341596301&ei=3KI6Zd6FEpKwhbIP36WlgAc&oq=&gs_lp=Egxnd3Mtd2l6LXNlcnAiACoCCAEyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyBxAjGOoCGCcyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEBAAGIoFGOoCGLQCGEPYAQEyEhAAGIoFGOoCGLQCGAoYQ9gBATIQEAAYigUY6gIYtAIYQ9gBAUjUDlAAWABwAXgBkAEAmAEAoAEAqgEAuAEByAEA-AEBqAIU4gMEGAAgQYgGAboGBggBEAEYAQ&sclient=gws-wiz-serp
     ax.set_xlabel("BMI Value")
     ax.barh(categories, borders, color=colours)
     #create title of graph
