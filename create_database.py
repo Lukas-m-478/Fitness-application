@@ -5,52 +5,99 @@ import sqlite3
 conn = sqlite3.connect("information.db")
 cur = conn.cursor()
 
-#create table with login details if it does not exist
+#create table with login details if it does not exist                  
 cur.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE, -- UNIQUE constraint
+CREATE TABLE IF NOT EXISTS users (                                   
+    id INTEGER PRIMARY KEY ,         -- references to all plans created by user
+    username VARCHAR(255) NOT NULL UNIQUE,      -- UNIQUE constraint to prevent duplicate accounts from being created
     password VARCHAR(255) NOT NULL       
 )            
 """)
 
-#create table with upper body exercises if it does not exist
+#create table to store user's personal information
+cur.execute("""
+CREATE TABLE IF NOT EXISTS user_personal_info (
+    id INTEGER,       -- Foreign key referencing to plan_identification
+    user_fk INTEGER,  -- Foreign key referencing the id column in the users table
+    current_weight FLOAT,
+    weight_goal FLOAT,
+    exercise_days_per_week INTEGER,
+    allergies BOOLEAN,
+    gym_access BOOLEAN,
+    FOREIGN KEY(user_fk) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(id) REFERENCES plan_identification(id) ON DELETE CASCADE
+)
+""")
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS plan_identification (
+    id INTEGER PRIMARY KEY ,               -- references to all the fitness plans created by the user
+    user_fk INTEGER,                      -- No unique constraint to allow user to make multiple plans,
+    plan_name VARCHAR(255),
+    start_date DATE,
+    FOREIGN KEY(user_fk) REFERENCES users(id) ON DELETE CASCADE
+)
+""")
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS workout_plan_details (
+    id INTEGER,                     
+    user_fk INTEGER,
+    monday VARCHAR(255),
+    tuesday VARCHAR(255),
+    wednesday VARCHAR(255),
+    thursday VARCHAR(255),
+    friday VARCHAR(255),
+    saturday VARCHAR(255),
+    sunday VARCHAR(255),
+    FOREIGN KEY(user_fk) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(id) REFERENCES plan_identification(id) ON DELETE CASCADE
+)
+""")
+
+# Create table with upper body exercises if it does not exist
 cur.execute("""
 CREATE TABLE IF NOT EXISTS upper_body_exercises (
     id INTEGER PRIMARY KEY,
-    exercise VARCHAR(255) NOT NULL      
+    exercise VARCHAR(255) NOT NULL,
+    exercise_day VARCHAR(255),
+    target_muscle VARCHAR(255)
 )            
 """)
 
-#create table with lower body exercises if it does not exist 
+# Create table with lower body exercises if it does not exist 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS lower_body_exercises (
     id INTEGER PRIMARY KEY,
-    exercise VARCHAR(255) NOT NULL   
+    exercise VARCHAR(255) NOT NULL,
+    exercise_day VARCHAR(255),
+    target_muscle VARCHAR(255)
 )            
 """)
 
-#create table with core exercises if it does not exist 
+# Create table with core exercises if it does not exist 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS core_exercises (
     id INTEGER PRIMARY KEY,
-    exercise VARCHAR(255) NOT NULL      
+    exercise VARCHAR(255) NOT NULL
 )            
 """)
 
-#create table with compound exercises if it does not exist 
+# Create table with compound exercises if it does not exist 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS compound_exercises (
     id INTEGER PRIMARY KEY,
-    exercise VARCHAR(255) NOT NULL      
+    exercise VARCHAR(255) NOT NULL,
+    exercise_day VARCHAR(255),
+    target_muscles VARCHAR(255)
 )            
 """)
 
-#create table with cardio exercises if it does not exist 
+# Create table with cardio exercises if it does not exist 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS cardio (
     id INTEGER PRIMARY KEY,
-    exercise VARCHAR(255) NOT NULL      
+    exercise VARCHAR(255) NOT NULL
 )            
 """)
 
@@ -97,15 +144,6 @@ cur.execute("INSERT INTO core_exercises (exercise) VALUES (?)", ("sit ups",))
 cur.execute("INSERT INTO core_exercises (exercise) VALUES (?)", ("plank",))
 cur.execute("INSERT INTO core_exercises (exercise) VALUES (?)", ("hanging leg raise",))
 cur.execute("INSERT INTO core_exercises (exercise) VALUES (?)", ("hollow hold",))
-
-#add exercise_day column to upper and lower body exercise tables (it stores "Push", "Pull" or "Legs")
-#add exercise_days column and target_muscles column to compound exercise table
-cur.execute("ALTER TABLE upper_body_exercises ADD COLUMN exercise_day VARCHAR(255)")
-cur.execute("ALTER TABLE lower_body_exercises ADD COLUMN exercise_day VARCHAR(255)")
-cur.execute("ALTER TABLE compound_exercises ADD COLUMN exercise_day VARCHAR(255)")
-cur.execute("ALTER TABLE compound_exercises ADD COLUMN target_muscles VARCHAR(255)")
-cur.execute("ALTER TABLE upper_body_exercises ADD COLUMN target_muscle VARCHAR(255)")
-cur.execute("ALTER TABLE lower_body_exercises ADD COLUMN target_muscle VARCHAR(255)")
 
 #add "Push", "Pull" or "Legs" to upper body exercises table to specify what exercise fits where
 cur.execute("UPDATE upper_body_exercises SET exercise_day = ? WHERE exercise = ?", ("Pull", "bicep curls"))
@@ -167,3 +205,4 @@ cur.execute("UPDATE compound_exercises SET target_muscles = ? WHERE exercise = ?
 
 #execute queries
 conn.commit()
+
