@@ -7,12 +7,13 @@ import sqlite3
 import re
 
 #import library to switch between files
-#this module was learned from https://www.youtube.com/watch?v=CUFIjz_U7Mo
+#call and subprocess was learned from https://www.youtube.com/watch?v=CUFIjz_U7Mo
+#and https://www.youtube.com/watch?v=2Fp1N6dof0Y respectively
 from subprocess import call
-
+import os
+import subprocess
 #import gui libraries, fundamentals of tkinter was learned from https://www.youtube.com/watch?v=ibf5cx221hk&t=1367s
 import customtkinter
-import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
 from tkinter import font
@@ -47,66 +48,74 @@ def registerinfo():
     confirm_password = confirm_password_input.get()
     usernamelength = len(username_info)
     passwordlength = len(password_info)
-    #check if new username and new password entries are empty
-    if username_info != "":
-        if password_info != "":
-            #checks if new username and new password is shorter than 15 characters
-            if usernamelength < 15:
-                if passwordlength < 15:   
-                    #checks if new username and new password are identical
-                    if username_info != password_info:
-                        #checks if new username and new password is at least 5 characters
-                        if usernamelength >= 5:
-                            if passwordlength >= 5:
-                                #automatically makes new username lowercase for better accessibility
-                                username_info = username_info.lower()
-                                #hashes new password for security
-                                h = hashlib.sha256()
-                                h.update(password_info.encode("utf-8"))
-                                #exception handling used so users cannot make multiple accounts with the same username
-                                try:
-                                    hashed_password = h.hexdigest()
-                                    #check if there is at least one capital letter and special character in new password
-                                    if (re.search(r'[!@#$%^&*()123456789]', password_info)) and (re.search(r'[A-Z]', password_info)):
-                                        #check if new password is identical to confirm pasword
-                                        if password_info == confirm_password:
-                                            #if all checks, are passed, new username and hashed new password will get added to the database, and user will login automatically
-                                            conn = sqlite3.connect("information.db")
-                                            cur = conn.cursor()
-                                            cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
-                                            conn.commit()
-                                            conn.close()
-                                            messagebox.showinfo(title="Success", message="Account has been created")
-                                            enter()
-                                        #an error message will pop up if any of the requirements are not satisfied
+    #check if new username and new password entries are empty, and if database exists
+    if os.path.isfile("information.db"):  
+        if username_info != "":
+            if password_info != "":
+                #checks if new username and new password is shorter than 15 characters
+                if usernamelength < 15:
+                    if passwordlength < 15:   
+                        #checks if new username and new password are identical
+                        if username_info != password_info:
+                            #checks if new username and new password is at least 5 characters
+                            if usernamelength >= 5:
+                                if passwordlength >= 5:
+                                    #automatically makes new username lowercase for better accessibility
+                                    username_info = username_info.lower()
+                                    #hashes new password for security
+                                    h = hashlib.sha256()
+                                    h.update(password_info.encode("utf-8"))
+                                    #exception handling used so users cannot make multiple accounts with the same username
+                                    try:
+                                        hashed_password = h.hexdigest()
+                                        #check if there is at least one capital letter and special character in new password
+                                        if (re.search(r'[!@#$%^&*()]', password_info)) and (re.search(r'[A-Z]', password_info)):
+                                            #check if new password is identical to confirm pasword
+                                            if password_info == confirm_password:
+                                                if os.path.isfile("information.db"):
+                                                    #if all checks, are passed, new username and hashed new password will get added to the database, and user will login automatically
+                                                    conn = sqlite3.connect("information.db")
+                                                    cur = conn.cursor()
+                                                    cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username_info, hashed_password))
+                                                    conn.commit()
+                                                    cur.execute("SELECT id FROM users WHERE username=?", (username_info,))
+                                                    #get primary key value so foreign key can be used in database
+                                                    primary_key = cur.fetchone()
+                                                    conn.close()
+                                                    #write the primary key value to text file so it can be fetched from the text file as a foreign key
+                                                    with open("user_key.txt","w") as file:
+                                                            file.write(str(primary_key))
+                                                    messagebox.showinfo(title="Success", message="Account has been created")
+                                                    enter()
+                                                else:
+                                                    messagebox.showerror(title = "Error",message="Database does not exist")
+                                            #an error message will pop up if any of the requirements are not satisfied
+                                            else:
+                                                messagebox.showerror(title="error",message="Passwords must be identical")
                                         else:
-                                            messagebox.showerror(title="error",message="Passwords must be identical")
-                                    else:
-                                        messagebox.showerror(title="Error", message="Password must contain at least one capital letter and at least one special character")
-                                except sqlite3.IntegrityError:
-                                    messagebox.showerror(title="Error", message="User already exists")
+                                            messagebox.showerror(title="Error", message="Password must contain at least one capital letter and at least one special character")
+                                    except sqlite3.IntegrityError:
+                                        messagebox.showerror(title="Error", message="User already exists")
+                                else:
+                                    messagebox.showerror(title="Error",message="Password must be at least 5 characters long")
                             else:
-                                messagebox.showerror(title="Error",message="Password must be at least 5 characters long")
+                                messagebox.showerror(title="Error", message="Username must be at least 5 characters long")
                         else:
-                            messagebox.showerror(title="Error", message="Username must be at least 5 characters long")
+                            messagebox.showerror(title="Error", message="Username and password cannot be identical")
                     else:
-                        messagebox.showerror(title="Error", message="Username and password cannot be identical")
+                        messagebox.showerror("error", message="Password is too long")
                 else:
-                    messagebox.showerror("error", message="Password is too long")
+                    messagebox.showerror("error", message="Username is too long")  
             else:
-                messagebox.showerror("error", message="Username is too long")  
+                messagebox.showerror(title="Error", message="Password cannot be empty")  
         else:
-            messagebox.showerror(title="Error", message="Password cannot be empty")  
+            messagebox.showerror(title="Error", message="Username cannot be empty")              
     else:
-        messagebox.showerror(title="Error", message="Username cannot be empty")              
-   
+        messagebox.showerror(title = "Error",message="Database does not exist")
+
     newpassword_entry.delete(0, END)
     confirm_password_entry.delete(0,END)
 
-
-#use "login" entries as variables for login function
-username_by_user = StringVar()
-password_by_user = StringVar()
 
 #use "login" entries as variables for login function
 username_by_user = StringVar()
@@ -130,28 +139,46 @@ def login():
     h = hashlib.sha256()
     h.update(password1.encode("utf-8"))
     input_password = h.hexdigest()
-    conn = sqlite3.connect("information.db")
-    cur = conn.cursor()
-    cur.execute("SELECT password FROM users WHERE username=?", (username1,))
-    data = cur.fetchone()
-    conn.close()
-    
-    #checks if account(username) exists, then checks if password matches
-    if data is not None:
-        if input_password == data[0]:
-            login_correct()
+    if os.path.isfile("information.db"):  
+        conn = sqlite3.connect("information.db")
+        cur = conn.cursor()
+        cur.execute("SELECT password FROM users WHERE username=?", (username1,))
+        data = cur.fetchone()
+        cur.execute("SELECT id FROM users WHERE username=?", (username1,))
+        #get primary key value so foreign key can be used in database
+        primary_key = cur.fetchone()
+        conn.close()
+            
+        #checks if account(username) exists, then checks if password matches
+        if data is not None:
+            if input_password == data[0]:
+                #write the primary key value to text file so it can be fetched from the text file as a foreign key
+                with open("user_key.txt","w") as file:
+                    file.write(str(primary_key))
+                login_correct()
+            else:
+                messagebox.showerror(title="Error", message="Invalid password")
         else:
-            messagebox.showerror(title="Error", message="Invalid password")
+            messagebox.showerror(title="Error", message="User has not been found")
     else:
-        messagebox.showerror(title="Error", message="User has not been found")
-  
-    password_entry.delete(0, END)
-    
+        messagebox.showerror(title = "Error",message="Database does not exist")
+    password_entry.delete(0,END)
+
 #go to "deleteaccount" page
 def delete_acccountbutton():
     call(["python","deleteaccount.py"])
     window.destroy()
     
+#create database for user, so app can be used
+def create_database():
+    if os.path.isfile("information.db"):
+        messagebox.showerror(title = "Error", message = "Database already exists")
+    else:
+        try:
+            subprocess.run(["python", "create_database.py"])
+            messagebox.showinfo(title = "Success", message = "Database created successfully")
+        except Exception as e:
+            messagebox.showerror(title = "Error",message =  f"Error creating the database: {str(e)}")  
 
 #create widgets for login
 login_label = customtkinter.CTkLabel(master = window, text="Login", font =title_font)
@@ -163,6 +190,7 @@ login_button = customtkinter.CTkButton(master = window, text="Login", command = 
 delete_button = customtkinter.CTkButton(master = window, text = "delete", command = delete_acccountbutton)
 deleteaccount_label = customtkinter.CTkLabel(master = window, text = "Delete Account?", font =header_font)
 database_label = customtkinter.CTkLabel(master = window, text = "(Make sure that the database is installed\nor else the app will not work)", font =small_font)
+createdatabase_button = customtkinter.CTkButton(master = window, text = "Create database", command = create_database)
 
 #create widgets for register
 register_label = customtkinter.CTkLabel(master = window, text="Register", font =title_font)
@@ -187,6 +215,7 @@ login_button.place(x = 170, y = 210)
 delete_button.place(x = 170, y=305 )
 deleteaccount_label.place(x=170, y=265)
 database_label.place(x=150,y=360)
+createdatabase_button.place(x=170,y=390)
 
 #place widgets manually for register
 register_label.place(x = 590, y = 50)
@@ -202,4 +231,13 @@ confirm_password_label.place(x=410, y = 220)
 confirm_password_entry.place(x=590,y=220)
 
 #run window
-window.mainloop()
+if __name__ == "__main__":
+    window.mainloop()
+
+
+
+
+
+
+
+
