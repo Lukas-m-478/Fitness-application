@@ -1,255 +1,282 @@
 #import libraries
 from subprocess import call
-import tkinter as tk
-import customtkinter 
+import customtkinter as ctk
 from tkinter import *
 from tkinter import messagebox
 #import sys for closing window and terminating script fully, when user closes window
 import sys
 #import libraries for BMI graph to be created and placed on window
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 
-#create window
-customtkinter.set_appearance_mode("dark-blue")
-window = customtkinter.CTk()
-window.geometry("950x700")
-window.title("FitPro")
-#prevent user from resizing window
-window.resizable(False,False)
+#class for changing fonts of labels
+class Font(ctk.CTkFont):
+    def __init__(self, family, size, weight):
+        super().__init__(family=family, size=size, weight=weight)
 
-#create font
-title_font = customtkinter.CTkFont(family="Helvetica", size = 40, weight="bold")
-header_font = customtkinter.CTkFont(family="Helvetica", size = 18,weight="bold" )
-bmi_label_font = customtkinter.CTkFont(family="Helvetica", size = 22,weight="bold" )
-convertfrom_cm_font = customtkinter.CTkFont(family="Helvetica", size = 12 ,weight="bold")
-ethnicityexplanation_font = customtkinter.CTkFont(family="Helvetica", size = 15 ,weight="bold")
+#classes to create widgets
+class Switch(ctk.CTkSwitch):
+    def __init__(self,master,text,**kwargs):
+        super().__init__(master,text=text)
+        self.place(**kwargs)
 
-#use variables to retrieve values from entries
-weight = StringVar()
-height = StringVar()
-cm = StringVar()
-mm = StringVar()
+class ComboBox(ctk.CTkComboBox):
+    def __init__(self,master,values, **kwargs):
+        super().__init__(master,values=values)
+        self.place(**kwargs)
 
-#log out
-def logout():
-    msg_box = messagebox.askquestion(title = "Logout", message = "Are you sure you want to log out?")
-    if msg_box == "yes":
-        call(["python","loginpage.py"])
-        close_everything()
+class Entry(ctk.CTkEntry):
+    def __init__(self, master, show, textvariable, **kwargs):             
+        super().__init__(master, show=show , textvariable=textvariable)
+        self.place(**kwargs)
 
-#go to "deleteaccount" page
-def delete_acccountbutton():
-    msg_box = messagebox.askquestion(title = "Delete account", message = "Are you sure you want to delete your account? \nIf you change your mind, you will have to log in again.")
-    if msg_box == "yes":
-        call(["python","deleteaccount.py"])
-        close_everything()
+class Label(ctk.CTkLabel):
+    def __init__(self, master, text,font=None, **kwargs):
+        super().__init__(master, text=text, font=font)
+        self.place(**kwargs)
 
-#go to "makefitnessplan" page
-def create_plan():
-    call(["python","makefitnessplan.py"])
-    close_everything()
+class Button(ctk.CTkButton):
+    def __init__(self, master, text, command, **kwargs):
+        super().__init__(master, text=text, command=command)
+        self.place(**kwargs)
 
-#this website was used to find the horizontal graph from matplotlib: https://matplotlib.org/stable/gallery/lines_bars_and_markers/barh.html#sphx-glr-gallery-lines-bars-and-markers-barh-py
-#these videos were used to learn how to use matplotlib: https://www.youtube.com/watch?v=2JjQIh-sgHU&t=9s
-#https://www.youtube.com/watch?v=8exB6Ly3nx0
-#create a graph Based on the user's BMI
-def display_bmi_graph(bmi):
-    selected_value = ethnicity_options.get()
-    #onstruct graph by labelling axis, and by creating the bars (by choosing colours and width of bars)
-    categories = ["Your BMI", "Underweight", "Optimal\nweight", "Overweight", "Obese"]
-    borders = [bmi, 18.5, 21.7, 24.9, max(bmi + 5, 30)]
-    #adjust borders based on user's ethicity choice
-    if selected_value not in ["White", "Prefer not to say"]:
-        borders = [bmi, 18.5, 20.75, 23, max(bmi + 5, 27.5)]
-    colours = ['skyblue', 'red', 'green', 'yellow', 'orange']
-    fig, ax = plt.subplots(figsize=(8, 5))
-    ax.set_xlabel("BMI Value")
-    ax.barh(categories, borders, color=colours)
-    #create title of graph
-    ax.set_title("BMI Chart")
-    #specify width of graph
-    ax.set_xlim(0, max(borders)) 
-    #add grid lines for better readibility 
-    ax.grid(axis='x')
-    #place graph on window
-    canvas = FigureCanvasTkAgg(fig, master=window)
-    canvas_widget = canvas.get_tk_widget()
-    canvas_widget.place(x=540, y=125)
-
-#information for BMI calculator about ethnicity groups and BMI ranges is used from https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/
-#when "Calculate" button is pressed, check the value switches to see what units the user wants to use,
-#and check if input is a number or if entries are not empty, or else an error message will pop up
-def calculate_bmi():
-    weight_input = weight_entry.get()
-    height_input = height_entry.get()
-    if (weight_input != "") and (height_input != ""):
-        try:
-            weight = float(weight_input)
-            height = float(height_input)
-            weightswitch_value = weight_switch.get()
-            heightswitch_value = height_switch.get()
-            if (weightswitch_value == 0) and (heightswitch_value == 0):
-                calculate_bmi_kg_m()
-            elif (weightswitch_value == 1) and (heightswitch_value == 1):
-                calculate_bmi_lbs_inches()
-            elif (weightswitch_value == 1) and (heightswitch_value == 0):
-                calculate_bmi_lbs_m()
-            elif (weightswitch_value == 0) and (heightswitch_value == 1):
-                calculate_bmi_kg_inches()
+#class to create window
+class window(ctk.CTk):
+    def __init__(self):
+        super().__init__()
         
-        except ValueError:
-            messagebox.showerror(title="Error", message="Weight and height must be numbers")
-    else:
-        messagebox.showerror(title="Error", message="Weight or height cannot be empty")        
-    weight_entry.delete(0,END)
-    height_entry.delete(0,END)
+        #set title, window size and make it so the user cannot change the size 
+        self.title("FitPro")
+        self.geometry("950x700")
+        self.resizable(False, False)
 
-#convert inches to metres and calculate bmi
-def calculate_bmi_kg_inches():
-    kg = float(weight_entry.get())
-    inches = float(height_entry.get())
-    m = inches / 39.37
-    m_squared = m * m
-    bmi = kg/m_squared
-    result(bmi)
+        #use variables to retrieve values from entries
+        self.weight = StringVar()
+        self.height = StringVar()
+        self.cm = StringVar()
+        self.mm = StringVar()
 
-#convert metres to inches and calculate bmi
-def calculate_bmi_lbs_m():
-    lbs = float(weight_entry.get())
-    m = float(height_entry.get())
-    inches = m * 39.37
-    bmi = (lbs/(inches*inches)) * 703
-    result(bmi)
+        #method called when user wants to close the window
+        self.protocol("WM_DELETE_WINDOW", self.close_everything)
 
-#calculate bmi
-def calculate_bmi_kg_m():
-    kg = float(weight_entry.get())
-    m = float(height_entry.get())
-    m_squared = m*m
-    bmi = kg/m_squared
-    result(bmi)
+        #create font
+        self.title_font = Font("Helvetica", 40, "bold")
+        self.header_font = Font("Helvetica", 18,"bold" )
+        self.bmi_label_font = Font("Helvetica", 22,"bold" )
+        self.convertfrom_cm_font = Font("Helvetica", 12 ,"bold")
+        self.ethnicityexplanation_font = Font("Helvetica", 15 ,"bold")
 
-#calculate bmi
-def calculate_bmi_lbs_inches():
-    lbs = float(weight_entry.get())
-    inches = float(height_entry.get())
-    bmi = (lbs/(inches*inches)) * 703
-    result(bmi) 
+        #create and place widgets
+        self.return_button = Button(self, "Log out", self.logout, x=20, y=20)
+        self.homepage_label = Label(self, "Homepage", x=420, y=20, font=self.title_font)
+        self.createplan_button = Button(self, "Create fitness plan?", self.create_plan, x=20, y=50)
+        self.bmi_label = Label(self, "Calculate your BMI here", x=350, y=430, font=self.bmi_label_font)
+        self.weight_entry = Entry(self, "", self.weight, x=430, y=510)
+        self.height_entry = Entry(self, "", self.height, x=430, y=470)
+        self.weight_label = Label(self, "Weight:", x=350,y=510, font=self.header_font)
+        self.height_label = Label(self, "Height", x=350, y=470, font=self.header_font)
+        self.calculate_button = Button(self, "Calculate", self.calculate_bmi, x=430, y=550)
+        self.weight_switch = Switch(self,"Weight in kg or lbs? \n(KG-LEFT, LBS-RIGHT)",x=390,y=630)
+        self.height_switch = Switch(self,"Height in metres or inches? \n(METRES-LEFT, INCHES-RIGHT)",x=390,y=590)
+        self.convertfrom_cm_label = Label(self, "Do you only know your\n height in cm or mm?\n convert your height into\n metres here:", x=90, y=430, font=self.convertfrom_cm_font)
+        self.cm_to_m_label = Label(self, "cm to m:", x=20, y=500, font=self.header_font)
+        self.mm_to_m_label = Label(self, "mm to m:", x=20, y=585, font=self.header_font)
+        self.cm_to_m_entry = Entry(self, "", self.cm, x=120, y=500)
+        self.mm_to_m_entry = Entry(self, "", self.mm, x=120, y=585)
+        self.convert_mm_to_m_button = Button(self, "Convert", self.convert_mm_to_m, x=120, y=620)
+        self.convert_cm_to_m_button = Button(self, "Convert", self.convert_cm_to_m, x=120, y=535)
+        self.ethnicity_options = ComboBox(self,values = ["Prefer not to say","White","Mixed","Pakistani","Middle eastern","Indian","Chinese","Black caribbean","Black african","Bangladeshi","Other"],x=700,y=470)
+        self.ethnicity_label = Label(self, "What is your ethnicity?", x=700, y=430, font=self.header_font)
+        self.ethnicityexplanation_label = Label(self, "(We ask this because \nBMI results can vary for \ndifferent ethnic groups)", x=700, y=540, font=self.ethnicityexplanation_font)
+        self.delete_button = Button(self, "Delete Account", self.delete_acccountbutton, x=20, y=80)
+        self.bmigraph_label = Label(self, "When BMI is obtained, \na graph showing your \n data will appear\non the right→\n\nRemember, BMI does not\ntake muscle mass into account\nso muscular athletes may\nbe classed as overweight", x=20, y=150, font=self.bmi_label_font)
+        self.product_code_scanner = Button(self, "Product code scanner", self.product_scanner, x=160, y=20)
+        self.manage_fitness_plans_button = Button(self, "Manage fitness plans", self.manage_fitness_plans, x=160, y=50)
+        #button to close app
+        self.close_app = Button(self, "Close app", self.close_everything, x=160, y=80)
 
-#show result of BMI, also depending on ethicity option (e.g: underweight, overweight, healthy weight)
-def result(bmi):
-    selected_value = ethnicity_options.get()
-    underweight_border = 18.5
-    overweight_border = 24.9
-    obese_border = 30
-    #adjust borders based on user's ethicity choice
-    if selected_value not in ["White", "Prefer not to say"]:
-        overweight_border = 23
-        obese_border = 27.5
-    #work out the result based off the user's bmi
-    if underweight_border <= bmi <= overweight_border:
-        weight_result = "a healthy weight"
-    elif bmi < underweight_border:
-        weight_result = "underweight"
-    elif bmi > obese_border:
-        weight_result = "obese"
-    else:
-        weight_result = "overweight"
-    #Display result to user to show if they are a healthy weight, underweight, overweight or obese
-    messagebox.showinfo(title = "Success", message = f"Your BMI is {(bmi)}, you are {(weight_result)}. \nTo ensure that you have the correct result, please make sure to check your units.")
-    #call function to display graph based on user's result for data visualisation
-    display_bmi_graph(bmi)
+    #log out
+    def logout(self):
+        msg_box = messagebox.askquestion(title = "Logout", message = "Are you sure you want to log out?")
+        if msg_box == "yes":
+            call(["python","loginpage.py"])
+            self.close_everything()
 
-#convert cm to m and display result
-def convert_cm_to_m():
-    input_cm = cm.get()
-    if input_cm != "":
-        try:
-            input_cm = float(input_cm)
-            m = float(input_cm)/100
-            messagebox.showinfo(title="Success", message = f"{float(input_cm)} cm is {float(m)} m")
-        except ValueError:
-            messagebox.showerror(title = "Error", message = "cm must be a number")
-    else:
-        messagebox.showerror(title = "Error",message="cm to m cannot be empty")
-    cm_to_m_entry.delete(0,END)
+    #go to "deleteaccount" page
+    def delete_acccountbutton(self):
+        msg_box = messagebox.askquestion(title = "Delete account", message = "Are you sure you want to delete your account? \nIf you change your mind, you will have to log in again.")
+        if msg_box == "yes":
+            call(["python","deleteaccount.py"])
+            self.close_everything()
 
-#convert mm to m and display result
-def convert_mm_to_m():
-    input_mm = mm.get()
-    if input_mm != "":
-        try:
-            input_mm = float(input_mm)
+    #go to "get_info" page to start creating plan process
+    def create_plan(self):
+        call(["python","get_info.py"])
+        self.close_everything()
 
-            m = float(input_mm)/1000
-            messagebox.showinfo(title="Success", message = f"{float(input_mm)} mm is {float(m)} m")
-        except ValueError:
-            messagebox.showerror(title = "Error", message = "mm must be a number")
-    else:
-        messagebox.showerror(title = "Error",message="mm to m cannot be empty")
-    mm_to_m_entry.delete(0,END)
+    #go to "foodapi" page
+    def product_scanner(self):
+        call(["python","product_scanner.py"])
+        self.close_everything()
+
+    #go to "manage_fitness_plans" page
+    def manage_fitness_plans(self):
+        call(["python","manage_fitness_plans.py"])
+        self.close_everything()
+   
+    #information for BMI calculator about ethnicity groups and BMI ranges is used from https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/
+    #when "Calculate"   button is pressed, check the value switches to see what units the user wants to use,
+    #and check if input is a number or if entries are not empty, or else an error message will pop up
+    def calculate_bmi(self):
+        weight_input = self.weight_entry.get()
+        height_input = self.height_entry.get()
+        if (weight_input != "") and (height_input != ""):
+            try:
+                weight = float(weight_input)
+                height = float(height_input)
+                weightswitch_value = self.weight_switch.get()
+                heightswitch_value = self.height_switch.get()
+                if (weightswitch_value == 0) and (heightswitch_value == 0):
+                    self.calculate_bmi_kg_m()
+                elif (weightswitch_value == 1) and (heightswitch_value == 1):
+                    self.calculate_bmi_lbs_inches()
+                elif (weightswitch_value == 1) and (heightswitch_value == 0):
+                    self.calculate_bmi_lbs_m()
+                elif (weightswitch_value == 0) and (heightswitch_value == 1):
+                    self.calculate_bmi_kg_inches()
+            
+            except ValueError:
+                messagebox.showerror(title="Error", message="Weight and height must be numbers")
+                self.weight_entry.delete(0,END)
+                self.height_entry.delete(0,END)
+        else:
+            messagebox.showerror(title="Error", message="Weight or height cannot be empty")        
+        self.weight_entry.delete(0,END)
+        self.height_entry.delete(0,END)
+
+    #convert inches to metres and calculate bmi
+    def calculate_bmi_kg_inches(self):
+        kg = float(self.weight_entry.get())
+        inches = float(self.height_entry.get())
+        m = inches / 39.37
+        m_squared = m * m
+        bmi = kg/m_squared
+        self.result(bmi)
+
+    #convert metres to inches and calculate bmi
+    def calculate_bmi_lbs_m(self):
+        lbs = float(self.weight_entry.get())
+        m = float(self.height_entry.get())
+        inches = m * 39.37
+        bmi = (lbs/(inches*inches)) * 703
+        self.result(bmi)
+
+    #calculate bmi
+    def calculate_bmi_kg_m(self):
+        kg = float(self.weight_entry.get())
+        m = float(self.height_entry.get())
+        m_squared = m*m
+        bmi = kg/m_squared
+        self.result(bmi)
+
+    #calculate bmi
+    def calculate_bmi_lbs_inches(self):
+        lbs = float(self.weight_entry.get())
+        inches = float(self.height_entry.get())
+        bmi = (lbs/(inches*inches)) * 703
+        self.result(bmi) 
+
+    #show result of BMI, also depending on ethicity option (e.g: underweight, overweight, healthy weight)
+    def result(self,bmi):
+        selected_value = self.ethnicity_options.get()
+        underweight_border = 18.5
+        overweight_border = 24.9
+        obese_border = 30
+        #adjust borders based on user's ethicity choice
+        if selected_value not in ["White", "Prefer not to say"]:
+            overweight_border = 23
+            obese_border = 27.5
+        #work out the result based off the user's bmi
+        if underweight_border <= bmi <= overweight_border:
+            weight_result = "a healthy weight"
+        elif bmi < underweight_border:
+            weight_result = "underweight"
+        elif bmi > obese_border:
+            weight_result = "obese"
+        else:
+            weight_result = "overweight"
+        #Display result to user to show if they are a healthy weight, underweight, overweight or obese
+        messagebox.showinfo(title = "Success", message = f"Your BMI is {(bmi)}, you are {(weight_result)}. \nTo ensure that you have the correct result, please make sure to check your units.")
+        #call function to display graph based on user's result for data visualisation
+        self.display_bmi_graph(bmi)
+
+    #this website was used to find the horizontal graph from matplotlib: https://matplotlib.org/stable/gallery/lines_bars_and_markers/barh.html#sphx-glr-gallery-lines-bars-and-markers-barh-py
+    #these videos were used to learn how to use matplotlib: https://www.youtube.com/watch?v=2JjQIh-sgHU&t=9s
+    #https://www.youtube.com/watch?v=8exB6Ly3nx0
+    #create a graph Based on the user's BMI
+    def display_bmi_graph(self,bmi):
+        selected_value = self.ethnicity_options.get()
+        #onstruct graph by labelling axis, and by creating the bars (by choosing colours and width of bars)
+        categories = ["Your BMI", "Underweight", "Optimal\nweight", "Overweight", "Obese"]
+        borders = [bmi, 18.5, 21.7, 24.9, max(bmi + 5, 30)]
+        #adjust borders based on user's ethicity choice
+        if selected_value not in ["White", "Prefer not to say"]:
+            borders = [bmi, 18.5, 20.75, 23, max(bmi + 5, 27.5)]
+        colours = ['skyblue', 'red', 'green', 'yellow', 'orange']
+        plt.clf()
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.set_xlabel("BMI Value")
+        ax.barh(categories, borders, color=colours)
+        #create title of graph
+        ax.set_title("BMI Chart")
+        #specify width of graph
+        ax.set_xlim(0, max(borders)) 
+        #add grid lines for better readibility 
+        ax.grid(axis='x')
+        #place graph on window
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.place(x=540, y=125)
 
 
-#create widgets
-return_button = customtkinter.CTkButton(master = window, text="Log out", command = logout)
-homepage_label = customtkinter.CTkLabel(master= window, text = "Homepage",font=title_font)
-createplan_button = customtkinter.CTkButton(master=window,text = "Create fitness plan?", command = create_plan)
-bmi_label = customtkinter.CTkLabel(master=window, text="Calculate your BMI here:",font = bmi_label_font)
-weight_entry = customtkinter.CTkEntry(master=window,textvariable=weight)
-height_entry = customtkinter.CTkEntry(master=window,textvariable=height)
-weight_label = customtkinter.CTkLabel(master=window,text="Weight:",font = header_font)
-height_label = customtkinter.CTkLabel(master=window,text="Height:",font = header_font)
-calculate_button = customtkinter.CTkButton(master=window,text="Calculate", command= calculate_bmi)
-weight_switch = customtkinter.CTkSwitch(master=window,text = "Weight in kg or lbs? \n(KG-LEFT, LBS-RIGHT)")
-height_switch = customtkinter.CTkSwitch(master=window,text = "Height in metres or inches? \n(METRES-LEFT, INCHES-RIGHT)")
-convertfrom_cm_label = customtkinter.CTkLabel(master=window,text="Do you only know your\n height in cm or mm?\n convert your height into\n metres here:",font = convertfrom_cm_font)
-cm_to_m_label = customtkinter.CTkLabel(master=window,text = "cm to m:", font = header_font)
-mm_to_m_label = customtkinter.CTkLabel(master=window,text = "mm to m:", font = header_font)
-cm_to_m_entry = customtkinter.CTkEntry(master=window, textvariable=cm)
-mm_to_m_entry = customtkinter.CTkEntry(master=window, textvariable=mm)
-convert_mm_to_m_button = customtkinter.CTkButton(master=window,text="Convert",command = convert_mm_to_m)
-convert_cm_to_m_button = customtkinter.CTkButton(master=window,text="Convert",command = convert_cm_to_m)
-ethnicity_options = customtkinter.CTkComboBox(master=window, values = ["Prefer not to say","White","Mixed","Pakistani","Middle eastern","Indian","Chinese","Black caribbean","Black african","Bangladeshi","Other"])
-ethnicity_label = customtkinter.CTkLabel(master=window,text = "What is your ethnicity?", font = header_font)
-ethnicityexplanation_label = customtkinter.CTkLabel(master = window, text = "(We ask this because \nBMI results can vary for \ndifferent ethnic groups)", font = ethnicityexplanation_font)
-delete_button = customtkinter.CTkButton(master = window, text = "delete account", command = delete_acccountbutton)
-bmigraph_label = customtkinter.CTkLabel(master = window, text = "When BMI is obtained, \na graph showing your \n data will appear\non the right→\n\nRemember, BMI does not\ntake muscle mass into account\nso muscular athletes may\nbe classed as overweight", font = bmi_label_font)
+    #convert cm to m and display result
+    def convert_cm_to_m(self):
+        input_cm = self.cm.get()
+        if input_cm != "":
+            try:
+                input_cm = float(input_cm)
+                m = float(input_cm)/100
+                messagebox.showinfo(title="Success", message = f"{float(input_cm)} cm is {float(m)} m")
+                self.cm_to_m_entry.delete(0,END)
+            except ValueError:
+                messagebox.showerror(title = "Error", message = "cm must be a number")
+                self.cm_to_m_entry.delete(0,END)
+        else:
+            messagebox.showerror(title = "Error",message="cm to m cannot be empty")
 
-#place widgets manually
-return_button.place(x=20,y=20)
-homepage_label.place(x=420,y=20)
-createplan_button.place(x=20,y=50)
-bmi_label.place(x=350,y=430)
-weight_entry.place(x=430,y=510)
-height_entry.place(x=430,y=470)
-weight_label.place(x=350,y=510)
-height_label.place(x=350,y=470)
-calculate_button.place(x=430,y=550)
-weight_switch.place(x=390,y=630)
-height_switch.place(x=390,y=590)
-convertfrom_cm_label.place(x=90,y=430)
-cm_to_m_label.place(x=20,y=500)
-mm_to_m_label.place(x=20,y=585)
-cm_to_m_entry.place(x=120,y=500)
-mm_to_m_entry.place(x=120,y=585)
-convert_mm_to_m_button.place(x=120,y=620)
-convert_cm_to_m_button.place(x=120,y=535)
-ethnicity_options.place(x=700,y=470)
-ethnicity_label.place(x=700,y=430)
-ethnicityexplanation_label.place(x=700,y=540)
-delete_button.place(x=20,y=80)
-bmigraph_label.place(x=20,y=150)
+    #convert mm to m and display result
+    def convert_mm_to_m(self):
+        input_mm = self.mm.get()
+        if input_mm != "":
+            try:
+                input_mm = float(input_mm)
+                m = float(input_mm)/1000
+                messagebox.showinfo(title="Success", message = f"{float(input_mm)} mm is {float(m)} m")
+                self.mm_to_m_entry.delete(0,END)
+            except ValueError:
+                messagebox.showerror(title = "Error", message = "mm must be a number")
+                self.mm_to_m_entry.delete(0,END)
+        else:
+            messagebox.showerror(title = "Error",message="mm to m cannot be empty")
 
-#Fucntion to close whole program/window
-def close_everything():
-    window.quit()
-    window.destroy()
-    sys.exit()
-
-
-#call the close_everything function when user presses close window button in the top right
-window.protocol("WM_DELETE_WINDOW", close_everything)
+    def close_everything(self):
+        children = self.winfo_children()
+        for widget in children:
+            widget.destroy()
+        self.quit()
+        sys.exit()   
 
 #run window
-window.mainloop()
+if __name__ == "__main__":
+    app = window()
+    app.mainloop()
