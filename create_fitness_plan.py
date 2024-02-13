@@ -85,9 +85,7 @@ class window(ctk.CTk):
                 most_recent_entry = information_id[0]
                 cur.execute("UPDATE user_personal_info SET id = ? WHERE main_id = ?", (self.plan_key,most_recent_entry))
                 cur.execute("UPDATE equipment_access SET id = ? WHERE main_id = ?", (self.plan_key,most_recent_entry))
-                cur.execute("UPDATE workout_plan_details SET id = ? WHERE main_id = ?", (self.plan_key,most_recent_entry))
                 cur.execute("UPDATE nutrition_plan_details SET id = ? WHERE main_id = ?", (self.plan_key,most_recent_entry))
-                self.plan_key = cur.fetchone()
                 conn.commit()
                 conn.close()
                 #write plan key to file so it can be used to display the plan
@@ -236,9 +234,9 @@ class window(ctk.CTk):
                 
     #one of these three methods will create a blueprint for what the workout plan should consist of
     def lose_weight(self):
-        self.push_day = []
-        self.pull_day = []
-        self.legs_day = []
+        self.push_day1 = []
+        self.pull_day1 = []
+        self.legs_day1 = []
     #sets the correct number of exercises based on the user's past fitness experience
         if self.physical_activity == "low":
             #max_exercises_per_day is there for testing purposes as an indicator of how many exercises should be in each list
@@ -265,7 +263,7 @@ class window(ctk.CTk):
         #add compound exercises to push day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day1.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -276,7 +274,7 @@ class window(ctk.CTk):
         #add isolation exercises to push day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day1.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -287,7 +285,7 @@ class window(ctk.CTk):
         #add cardio exercises to push day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.push_day.append(exercise[0])
+                self.push_day1.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -298,7 +296,7 @@ class window(ctk.CTk):
         #add compound exercises to pull day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day1.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -309,7 +307,7 @@ class window(ctk.CTk):
         #add isolation exercises to pull day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day1.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -320,7 +318,7 @@ class window(ctk.CTk):
         #add cardio exercises to pull day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day1.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -331,7 +329,7 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day1.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -342,7 +340,7 @@ class window(ctk.CTk):
         #add isolation exercises to legs day
         for exercise in self.lower_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day1.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -353,20 +351,20 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day1.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
-        print(self.push_day)
-        print(self.legs_day)
-        print(self.pull_day)
+        print(self.push_day1)
+        print(self.legs_day1)
+        print(self.pull_day1)
         print("lose weight")
         self.insert_information()
 
     def build_lean_muscle(self):
-        self.push_day = []
-        self.pull_day = []
-        self.legs_day = []
+        self.push_day2 = []
+        self.pull_day2 = []
+        self.legs_day2 = []
 
         if self.physical_activity == "low":
             max_exercises_per_day = 4
@@ -392,7 +390,7 @@ class window(ctk.CTk):
         #add compound exercises to push day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day2.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -403,7 +401,7 @@ class window(ctk.CTk):
         #add isolation exercises to push day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day2.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -414,7 +412,7 @@ class window(ctk.CTk):
         #add cardio exercises to push day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.push_day.append(exercise[0])
+                self.push_day2.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -425,7 +423,7 @@ class window(ctk.CTk):
         #add compound exercises to pull day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day2.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -436,7 +434,7 @@ class window(ctk.CTk):
         #add isolation exercises to pull day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day2.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -447,7 +445,7 @@ class window(ctk.CTk):
         #add cardio exercises to pull day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day2.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -458,7 +456,7 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day2.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -469,7 +467,7 @@ class window(ctk.CTk):
         #add isolation exercises to legs day
         for exercise in self.lower_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day2.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -480,20 +478,20 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day2.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
-        print(self.push_day)
-        print(self.legs_day)
-        print(self.pull_day)
+        print(self.push_day2)
+        print(self.legs_day2)
+        print(self.pull_day2)
         print("build lean muscle")
         self.insert_information()
 
     def maintain_weight(self):
-        self.push_day = []
-        self.pull_day = []
-        self.legs_day = []
+        self.push_day3 = []
+        self.pull_day3 = []
+        self.legs_day3 = []
 
         if self.physical_activity == "low":
             max_exercises_per_day = 4
@@ -519,7 +517,7 @@ class window(ctk.CTk):
         #add compound exercises to push day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day3.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -530,7 +528,7 @@ class window(ctk.CTk):
         #add isolation exercises to push day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Push" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.push_day.append(exercise[0])
+                self.push_day3.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -541,7 +539,7 @@ class window(ctk.CTk):
         #add cardio exercises to push day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.push_day.append(exercise[0])
+                self.push_day3.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -552,7 +550,7 @@ class window(ctk.CTk):
         #add compound exercises to pull day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day3.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -563,7 +561,7 @@ class window(ctk.CTk):
         #add isolation exercises to pull day
         for exercise in self.upper_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Pull" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day3.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -574,7 +572,7 @@ class window(ctk.CTk):
         #add cardio exercises to pull day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.pull_day.append(exercise[0])
+                self.pull_day3.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
@@ -585,7 +583,7 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.compound_exercises:
             if compound_counter < compound_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day3.append(exercise[0])
                 compound_counter += 1
                 if compound_counter == compound_exercises_per_day:
                     break
@@ -596,7 +594,7 @@ class window(ctk.CTk):
         #add isolation exercises to legs day
         for exercise in self.lower_body_exercises:
             if isolation_counter < isolation_exercises_per_day and "Legs" in exercise[1] and (exercise[3] == 1 or exercise[3]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day3.append(exercise[0])
                 isolation_counter += 1
                 if isolation_counter == isolation_exercises_per_day:
                     break
@@ -607,54 +605,269 @@ class window(ctk.CTk):
         #add compound exercises to legs day
         for exercise in self.cardio_exercises:
             if cardio_counter < cardio_exercises_per_day and (exercise[1] == 1 or exercise[1]==None):
-                self.legs_day.append(exercise[0])
+                self.legs_day3.append(exercise[0])
                 cardio_counter += 1
                 if cardio_counter == cardio_exercises_per_day:
                     break
-        print(self.push_day)
-        print(self.legs_day)
-        print(self.pull_day)
+        print(self.push_day3)
+        print(self.legs_day3)
+        print(self.pull_day3)
         print("maintain weight")
         self.insert_information()
 
     #method will insert the exercises into the correct fields in the workout_plan_details_table
     def insert_information(self):
-        if self.physical_activity == "low":
-            print("low")
+        if self.physical_activity == "low" and self.current_weight > self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day1[0]
+            push_ex_2 = self.push_day1[1]
+            push_ex_3 = self.push_day1[2]
+            push_ex_4 = self.push_day1[3]
+            pull_ex_1 = self.pull_day1[0]
+            pull_ex_2 = self.pull_day1[1]
+            pull_ex_3 = self.pull_day1[2]
+            pull_ex_4 = self.pull_day1[3]
+            legs_ex_1 = self.legs_day1[0]
+            legs_ex_2 = self.legs_day1[1]
+            legs_ex_3 = self.legs_day1[2]
+            legs_ex_4 = self.legs_day1[3]
+        
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
-            all_exercises = self.push_day + self.pull_day + self.legs_day
-            cur.execute("""INSERT INTO workout_plan_details (push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (all_exercises))
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
+            conn.commit()
             conn.close()
             self.display_plan()
 
-        elif self.physical_activity == "moderate":
-            print("moderate")
+        elif self.physical_activity == "low" and self.current_weight < self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day2[0]
+            push_ex_2 = self.push_day2[1]
+            push_ex_3 = self.push_day2[2]
+            push_ex_4 = self.push_day2[3]
+            pull_ex_1 = self.pull_day2[0]
+            pull_ex_2 = self.pull_day2[1]
+            pull_ex_3 = self.pull_day2[2]
+            pull_ex_4 = self.pull_day2[3]
+            legs_ex_1 = self.legs_day2[0]
+            legs_ex_2 = self.legs_day2[1]
+            legs_ex_3 = self.legs_day2[2]
+            legs_ex_4 = self.legs_day2[3]
+        
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
-            all_exercises = self.push_day + self.pull_day + self.legs_day
-            cur.execute("""INSERT INTO workout_plan_details (push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (all_exercises))
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
+            conn.commit()
             conn.close()
             self.display_plan()
 
-        else:
-            print("vigorous")
+        elif self.physical_activity == "low" and self.current_weight == self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day3[0]
+            push_ex_2 = self.push_day3[1]
+            push_ex_3 = self.push_day3[2]
+            push_ex_4 = self.push_day3[3]
+            push_ex_5 = self.push_day3[4]
+            push_ex_6 = self.push_day3[5]
+            pull_ex_1 = self.pull_day3[0]
+            pull_ex_2 = self.pull_day3[1]
+            pull_ex_3 = self.pull_day3[2]
+            pull_ex_4 = self.pull_day3[3]
+            pull_ex_5 = self.pull_day3[4]
+            pull_ex_6 = self.pull_day3[5]
+            legs_ex_1 = self.legs_day3[0]
+            legs_ex_2 = self.legs_day3[1]
+            legs_ex_3 = self.legs_day3[2]
+            legs_ex_4 = self.legs_day3[3]
+            legs_ex_5 = self.legs_day3[4]
+            legs_ex_6 = self.legs_day3[5]
+
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
-            all_exercises = self.push_day + self.pull_day + self.legs_day
-            cur.execute("""INSERT INTO workout_plan_details (push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?)""", (all_exercises))
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "moderate" and self.current_weight > self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day1[0]
+            push_ex_2 = self.push_day1[1]
+            push_ex_3 = self.push_day1[2]
+            push_ex_4 = self.push_day1[3]
+            pull_ex_1 = self.pull_day1[0]
+            pull_ex_2 = self.pull_day1[1]
+            pull_ex_3 = self.pull_day1[2]
+            pull_ex_4 = self.pull_day1[3]
+            legs_ex_1 = self.legs_day1[0]
+            legs_ex_2 = self.legs_day1[1]
+            legs_ex_3 = self.legs_day1[2]
+            legs_ex_4 = self.legs_day1[3]
+        
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
+            cur.commit()
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "moderate" and self.current_weight < self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day2[0]
+            push_ex_2 = self.push_day2[1]
+            push_ex_3 = self.push_day2[2]
+            push_ex_4 = self.push_day2[3]
+            push_ex_5 = self.push_day2[4]
+            pull_ex_1 = self.pull_day2[0]
+            pull_ex_2 = self.pull_day2[1]
+            pull_ex_3 = self.pull_day2[2]
+            pull_ex_4 = self.pull_day2[3]
+            pull_ex_5 = self.pull_day2[4]
+            legs_ex_1 = self.legs_day2[0]
+            legs_ex_2 = self.legs_day2[1]
+            legs_ex_3 = self.legs_day2[2]
+            legs_ex_4 = self.legs_day2[3]
+            legs_ex_5 = self.legs_day2[4]
+        
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5))
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "moderate" and self.current_weight == self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day3[0]
+            push_ex_2 = self.push_day3[1]
+            push_ex_3 = self.push_day3[2]
+            push_ex_4 = self.push_day3[3]
+            push_ex_5 = self.push_day3[4]
+            push_ex_6 = self.push_day3[5]
+            pull_ex_1 = self.pull_day3[0]
+            pull_ex_2 = self.pull_day3[1]
+            pull_ex_3 = self.pull_day3[2]
+            pull_ex_4 = self.pull_day3[3]
+            pull_ex_5 = self.pull_day3[4]
+            pull_ex_6 = self.pull_day3[5]
+            legs_ex_1 = self.legs_day3[0]
+            legs_ex_2 = self.legs_day3[1]
+            legs_ex_3 = self.legs_day3[2]
+            legs_ex_4 = self.legs_day3[3]
+            legs_ex_5 = self.legs_day3[4]
+            legs_ex_6 = self.legs_day3[5]
+           
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "vigorous" and self.current_weight > self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day1[0]
+            push_ex_2 = self.push_day1[1]
+            push_ex_3 = self.push_day1[2]
+            push_ex_4 = self.push_day1[3]
+            pull_ex_1 = self.pull_day1[0]
+            pull_ex_2 = self.pull_day1[1]
+            pull_ex_3 = self.pull_day1[2]
+            pull_ex_4 = self.pull_day1[3]
+            legs_ex_1 = self.legs_day1[0]
+            legs_ex_2 = self.legs_day1[1]
+            legs_ex_3 = self.legs_day1[2]
+            legs_ex_4 = self.legs_day1[3]
+        
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "vigorous" and self.current_weight < self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day2[0]
+            push_ex_2 = self.push_day2[1]
+            push_ex_3 = self.push_day2[2]
+            push_ex_4 = self.push_day2[3]
+            push_ex_5 = self.push_day2[4]
+            pull_ex_1 = self.pull_day2[0]
+            pull_ex_2 = self.pull_day2[1]
+            pull_ex_3 = self.pull_day2[2]
+            pull_ex_4 = self.pull_day2[3]
+            pull_ex_5 = self.pull_day2[4]
+            legs_ex_1 = self.legs_day2[0]
+            legs_ex_2 = self.legs_day2[1]
+            legs_ex_3 = self.legs_day2[2]
+            legs_ex_4 = self.legs_day2[3]
+            legs_ex_5 = self.legs_day2[4]
+        
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5))
+            conn.commit()
+            conn.close()
+            self.display_plan()
+
+        elif self.physical_activity == "vigorous" and self.current_weight == self.weight_goal:
+
+            #get exercises
+            push_ex_1 = self.push_day3[0]
+            push_ex_2 = self.push_day3[1]
+            push_ex_3 = self.push_day3[2]
+            push_ex_4 = self.push_day3[3]
+            push_ex_5 = self.push_day3[4]
+            push_ex_6 = self.push_day3[5]
+            pull_ex_1 = self.pull_day3[0]
+            pull_ex_2 = self.pull_day3[1]
+            pull_ex_3 = self.pull_day3[2]
+            pull_ex_4 = self.pull_day3[3]
+            pull_ex_5 = self.pull_day3[4]
+            pull_ex_6 = self.pull_day3[5]
+            legs_ex_1 = self.legs_day3[0]
+            legs_ex_2 = self.legs_day3[1]
+            legs_ex_3 = self.legs_day3[2]
+            legs_ex_4 = self.legs_day3[3]
+            legs_ex_5 = self.legs_day3[4]
+            legs_ex_6 = self.legs_day3[5]
+
+            conn = sqlite3.connect("information.db")
+            cur = conn.cursor()
+            #insert exercises
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
+            conn.commit()
             conn.close()
             self.display_plan()
 
     #method will write the user plan key to the text file, then go to display_plan
     def display_plan(self):
+        print(self.plan_key)
         with open("user_plan_key.txt","w") as file:
                         file.write(str(self.plan_key))
         call(["python","display_plan.py"])
         self.close_everything()   
 
     #This method will delete all user's personal information and return back to homepage
-    def discard(self):  
+    def discard(self):
         conn = sqlite3.connect("information.db")
         cur = conn.cursor()
         #deletes most recent entry
