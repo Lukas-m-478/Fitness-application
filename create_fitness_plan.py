@@ -36,8 +36,7 @@ class window(ctk.CTk):
         self.geometry("500x300")
         self.resizable(False, False)
         #this will call method that will discard information if user presses close button in top right corner
-                                          #testing
-        self.protocol("WM_DELETE_WINDOW", self.close_everything)
+        self.protocol("WM_DELETE_WINDOW", self.discard_on_close)
 
         #collect plan name from user
         self.plan_name_var = StringVar()
@@ -162,63 +161,62 @@ class window(ctk.CTk):
         #list of tuples of upper body exercises (isolation exercises)
         self.upper_body_exercises = [
             #use OR AND for equipment row
-            ("reverse snow angels\n(using heavy objects)", "Pull", "biceps", None),
-            ("isometric hold", "Push", "shoulders", None),
-            ("superman pull", "Pull", "biceps", None),
-            ("chest squeeze", "Push", "shoulders", None),
-            ("wall push ups", "Push", "shoulders", None),
-            ("isometric shoulder\nretraction", "Pull", "biceps", None),
-            ("preacher curls", "Pull", "biceps", (self.ez_bar and self.preacher_curl_bench)),
-            ("incline bicep\ncurls","Pull","biceps",(self.dumbells and self.bench)),
-            ("incline hammer\ncurls","Pull","biceps",(self.dumbells and self.bench)),
+            ("Reverse snow angels\n(using heavy objects)", "Pull", "biceps", None),
+            ("Isometric hold", "Push", "shoulders", None),
+            ("Superman pull", "Pull", "biceps", None),
+            ("Chest squeeze", "Push", "shoulders", None),
+            ("Wall push ups", "Push", "shoulders", None),
+            ("Isometric shoulder\nretraction", "Pull", "biceps", None),
+            ("Preacher curls", "Pull", "biceps", (self.ez_bar and self.preacher_curl_bench)),
+            ("Incline bicep\ncurls","Pull","biceps",(self.dumbells and self.bench)),
+            ("Incline hammer\ncurls","Pull","biceps",(self.dumbells and self.bench)),
             ("lateral raise", "Push", "shoulders,traps", (self.dumbells or self.cables)),
-            ("rear delts", "Push", "shoulders", (self.cables or self.pec_fly_machine)),
-            ("bicep curls", "Pull", "biceps", self.dumbells),
-            ("hammer curls", "Pull", "biceps", self.dumbells),
-            ("barbell curls", "Pull", "biceps", self.barbell),
-            ("tricep extensions", "Push", "triceps", self.dumbells)
+            ("Rear delts", "Push", "shoulders", (self.cables or self.pec_fly_machine)),
+            ("Bicep curls", "Pull", "biceps", self.dumbells),
+            ("Hammer curls", "Pull", "biceps", self.dumbells),
+            ("Barbell curls", "Pull", "biceps", self.barbell),
+            ("Tricep extensions", "Push", "triceps", self.dumbells)
         ]
 
         #list of tuples of lower body exercises (isolation exercises)
         self.lower_body_exercises = [
-            ("leg extensions", "Legs", "quads", self.leg_extensions_machine),
-            ("leg curls", "Legs", "hamstrings", self.leg_curl_machine),
-            ("calf raises", "Legs", "calves", None),
-            ("glute bridges", "Legs", "glutes", None),
-            ("standing lateral\nleg raise", "Legs", "glutes", None)
+            ("Leg extensions", "Legs", "quads", self.leg_extensions_machine),
+            ("Leg curls", "Legs", "hamstrings", self.leg_curl_machine),
+            ("Calf raises", "Legs", "calves", None),
+            ("Glute bridges", "Legs", "glutes", None),
+            ("Standing lateral\nleg raise", "Legs", "glutes", None)
         ]
 
         #list of tuples of compound exercises
         self.compound_exercises = [
-            ("pull ups", "Pull", "back,shoulders,biceps,traps", self.pull_up_bar),
+            ("Pull ups", "Pull", "back,shoulders,biceps,traps", self.pull_up_bar),
             ("Australian pull ups\n(using table)", "Pull", "back,shoulders,biceps,traps", None),
-            ("dips", "Push", "triceps,chest", self.dip_station),
-            ("inverted rows\n(using table)", "Pull", "back,shoulders,biceps,traps", None),
-            ("chin ups","Pull","back,shoulders,biceps,traps",self.pull_up_bar),
-            ("squats", "Legs", "quads,hamstrings,calves,glutes", None),
-            ("deadlift","Legs,Pull","hamstrings,back,glutes,traps",self.barbell),
-            ("bench press","Push","chest,shoulders,triceps",(self.barbell and self.bench)),
-            ("push ups","Push","triceps,chest,shoulders",None),
-            ("shoulder press","Push","shoulders,triceps,chest",self.shoulder_press_machine),
-            ("laterall pull-down","Pull","lats,biceps,shoulders,traps",self.lateral_pulldown_machine),
-            ("pec fly","Push","shoulders,triceps,biceps",self.pec_fly_machine),
-            ("rows","Pull","lats,shoulders,back,biceps",(self.rowing_machine or self.cables)),
-            ("leg-press","Legs","quads,glutes,hamstrings,calves",(self.leg_press_machine)),
-            ("lunges","Legs","glutes,hamstrings,quads,calves",None),
-            ("burpees","Legs,Push","chest,triceps,shoulders,quads,hamstrings,glutes,calves",None),
-            ("bulgarian split squat","Legs","quads,glutes,hamstrings,calves",(self.bench and self.dumbells))
+            ("Dips", "Push", "triceps,chest", self.dip_station),
+            ("Inverted rows\n(using table)", "Pull", "back,shoulders,biceps,traps", None),
+            ("Chin ups","Pull","back,shoulders,biceps,traps",self.pull_up_bar),
+            ("Squats", "Legs", "quads,hamstrings,calves,glutes", None),
+            ("Deadlift","Legs,Pull","hamstrings,back,glutes,traps",self.barbell),
+            ("Bench press","Push","chest,shoulders,triceps",(self.barbell and self.bench)),
+            ("Push ups","Push","triceps,chest,shoulders",None),
+            ("Shoulder press","Push","shoulders,triceps,chest",self.shoulder_press_machine),
+            ("Laterall pull-down","Pull","lats,biceps,shoulders,traps",self.lateral_pulldown_machine),
+            ("Pec fly","Push","shoulders,triceps,biceps",self.pec_fly_machine),
+            ("Rows","Pull","lats,shoulders,back,biceps",(self.rowing_machine or self.cables)),
+            ("Leg-press","Legs","quads,glutes,hamstrings,calves",(self.leg_press_machine)),
+            ("Lunges","Legs","glutes,hamstrings,quads,calves",None),
+            ("Burpees","Legs,Push","chest,triceps,shoulders,quads,hamstrings,glutes,calves",None),
+            ("Bulgarian split squat","Legs","quads,glutes,hamstrings,calves",(self.bench and self.dumbells))
         ]
 
         #list of tuples of cardio exercises
         #for list of tuples of cardio exercises, first column is the exercise
         #and second column is whether equipment is needed
         self.cardio_exercises = [
-            ("running", self.treadmill),
-            ("jogging", self.treadmill),
-            ("skipping rope", self.skipping_rope),
-            ("biking", self.exercise_bike),
-            ("stairs",self.stair_climber_machine),
-            ("crunches", None)
+            ("Running on\ntreadmill", self.treadmill),
+            ("Skipping rope", self.skipping_rope),
+            ("Biking", self.exercise_bike),
+            ("Stairs",self.stair_climber_machine),
+            ("Crunches", None)
         ]
         self.create_plan_details()
 
@@ -672,25 +670,19 @@ class window(ctk.CTk):
             push_ex_2 = self.push_day3[1]
             push_ex_3 = self.push_day3[2]
             push_ex_4 = self.push_day3[3]
-            push_ex_5 = self.push_day3[4]
-            push_ex_6 = self.push_day3[5]
             pull_ex_1 = self.pull_day3[0]
             pull_ex_2 = self.pull_day3[1]
             pull_ex_3 = self.pull_day3[2]
             pull_ex_4 = self.pull_day3[3]
-            pull_ex_5 = self.pull_day3[4]
-            pull_ex_6 = self.pull_day3[5]
             legs_ex_1 = self.legs_day3[0]
             legs_ex_2 = self.legs_day3[1]
             legs_ex_3 = self.legs_day3[2]
             legs_ex_4 = self.legs_day3[3]
-            legs_ex_5 = self.legs_day3[4]
-            legs_ex_6 = self.legs_day3[5]
 
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
             #insert exercises
-            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
             conn.commit()
             conn.close()
             self.display_plan()
@@ -702,20 +694,22 @@ class window(ctk.CTk):
             push_ex_2 = self.push_day1[1]
             push_ex_3 = self.push_day1[2]
             push_ex_4 = self.push_day1[3]
+            push_ex_5 = self.push_day1[4]
             pull_ex_1 = self.pull_day1[0]
             pull_ex_2 = self.pull_day1[1]
             pull_ex_3 = self.pull_day1[2]
             pull_ex_4 = self.pull_day1[3]
+            pull_ex_5 = self.pull_day1[4]
             legs_ex_1 = self.legs_day1[0]
             legs_ex_2 = self.legs_day1[1]
             legs_ex_3 = self.legs_day1[2]
             legs_ex_4 = self.legs_day1[3]
+            legs_ex_5 = self.legs_day1[4]
         
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
             #insert exercises
-            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
-            cur.commit()
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5))
             conn.commit()
             conn.close()
             self.display_plan()
@@ -755,24 +749,21 @@ class window(ctk.CTk):
             push_ex_3 = self.push_day3[2]
             push_ex_4 = self.push_day3[3]
             push_ex_5 = self.push_day3[4]
-            push_ex_6 = self.push_day3[5]
             pull_ex_1 = self.pull_day3[0]
             pull_ex_2 = self.pull_day3[1]
             pull_ex_3 = self.pull_day3[2]
             pull_ex_4 = self.pull_day3[3]
             pull_ex_5 = self.pull_day3[4]
-            pull_ex_6 = self.pull_day3[5]
             legs_ex_1 = self.legs_day3[0]
             legs_ex_2 = self.legs_day3[1]
             legs_ex_3 = self.legs_day3[2]
             legs_ex_4 = self.legs_day3[3]
             legs_ex_5 = self.legs_day3[4]
-            legs_ex_6 = self.legs_day3[5]
            
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
             #insert exercises
-            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5))
             conn.commit()
             conn.close()
             self.display_plan()
@@ -784,19 +775,25 @@ class window(ctk.CTk):
             push_ex_2 = self.push_day1[1]
             push_ex_3 = self.push_day1[2]
             push_ex_4 = self.push_day1[3]
+            push_ex_5 = self.push_day1[4]
+            push_ex_6 = self.push_day1[5]
             pull_ex_1 = self.pull_day1[0]
             pull_ex_2 = self.pull_day1[1]
             pull_ex_3 = self.pull_day1[2]
             pull_ex_4 = self.pull_day1[3]
+            pull_ex_5 = self.pull_day1[4]
+            pull_ex_6 = self.pull_day1[5]
             legs_ex_1 = self.legs_day1[0]
             legs_ex_2 = self.legs_day1[1]
             legs_ex_3 = self.legs_day1[2]
             legs_ex_4 = self.legs_day1[3]
+            legs_ex_5 = self.legs_day1[4]
+            legs_ex_6 = self.legs_day1[5]
         
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
             #insert exercises
-            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4))
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
             conn.commit()
             conn.close()
             self.display_plan()
@@ -809,21 +806,24 @@ class window(ctk.CTk):
             push_ex_3 = self.push_day2[2]
             push_ex_4 = self.push_day2[3]
             push_ex_5 = self.push_day2[4]
+            push_ex_6 = self.push_day2[5]
             pull_ex_1 = self.pull_day2[0]
             pull_ex_2 = self.pull_day2[1]
             pull_ex_3 = self.pull_day2[2]
             pull_ex_4 = self.pull_day2[3]
             pull_ex_5 = self.pull_day2[4]
+            pull_ex_6 = self.pull_day2[5]
             legs_ex_1 = self.legs_day2[0]
             legs_ex_2 = self.legs_day2[1]
             legs_ex_3 = self.legs_day2[2]
             legs_ex_4 = self.legs_day2[3]
             legs_ex_5 = self.legs_day2[4]
+            legs_ex_6 = self.legs_day2[5]
         
             conn = sqlite3.connect("information.db")
             cur = conn.cursor()
             #insert exercises
-            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5))
+            cur.execute("""INSERT INTO workout_plan_details (id, user_fk, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (self.plan_key, self.account_key, push_ex_1, push_ex_2, push_ex_3, push_ex_4, push_ex_5, push_ex_6, pull_ex_1, pull_ex_2, pull_ex_3, pull_ex_4, pull_ex_5, pull_ex_6, legs_ex_1, legs_ex_2, legs_ex_3, legs_ex_4, legs_ex_5, legs_ex_6))
             conn.commit()
             conn.close()
             self.display_plan()
@@ -874,7 +874,6 @@ class window(ctk.CTk):
         cur.execute("DELETE FROM user_personal_info WHERE main_id = (SELECT MAX(main_id) FROM user_personal_info)")
         cur.execute("DELETE FROM equipment_access WHERE main_id = (SELECT MAX(main_id) FROM equipment_access)")
         cur.execute("DELETE FROM workout_plan_details WHERE main_id = (SELECT MAX(main_id) FROM workout_plan_details)")
-        cur.execute("DELETE FROM nutrition_plan_details WHERE main_id = (SELECT MAX(main_id) FROM nutrition_plan_details)")
         conn.commit()
         conn.close()
         call(["python","homepage.py"])
@@ -888,7 +887,6 @@ class window(ctk.CTk):
         cur.execute("DELETE FROM user_personal_info WHERE main_id = (SELECT MAX(main_id) FROM user_personal_info)")
         cur.execute("DELETE FROM equipment_access WHERE main_id = (SELECT MAX(main_id) FROM equipment_access)")
         cur.execute("DELETE FROM workout_plan_details WHERE main_id = (SELECT MAX(main_id) FROM workout_plan_details)")
-        cur.execute("DELETE FROM nutrition_plan_details WHERE main_id = (SELECT MAX(main_id) FROM nutrition_plan_details)")
         conn.commit()
         conn.close()
         self.close_everything()
